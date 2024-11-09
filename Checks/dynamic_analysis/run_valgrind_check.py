@@ -4,39 +4,31 @@ import sys
 import platform
 import json
 import re
+from datetime import datetime
 
 def run_valgrind_check(file_path):
     _, ext = os.path.splitext(file_path)
-    # For C, C++, Fortran, Ada, Assembly
+    
     if ext in ['.c', '.cpp', '.f', '.ada', '.asm']:
         return run_valgrind_for_compiled(file_path)
-    # For Java
     elif ext == '.java':
         return run_valgrind_for_java(file_path)
-    # For Python
     elif ext == '.py':
         return run_valgrind_for_interpreter(file_path, 'python3')
-    # For Perl
     elif ext == '.pl':
         return run_valgrind_for_interpreter(file_path, 'perl')
     else:
         raise ValueError(f"Unsupported file extension: {ext}")
 
 def run_valgrind_for_compiled(file_path):
-    """
-    For C, C++, Fortran, and Ada.
-    """
     compiled_program = compile_program(file_path)
     print(f"Running Valgrind on {compiled_program}")
     command = ['valgrind', '--leak-check=full', './' + compiled_program]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
-    save_json_output(output_json, 'valgrind_report.json')
+    save_json_output(output_json, file_path, 'valgrind_report.json')
 
 def compile_program(file_path):
-    """
-    Handle C, C++, Fortran, and Ada.
-    """
     output_file = 'a.out' if platform.system() != 'Windows' else 'a.exe'
     if file_path.endswith('.cpp'):
         compile_cmd = ['g++', file_path, '-o', output_file]
@@ -55,9 +47,6 @@ def compile_program(file_path):
     return output_file
 
 def run_valgrind_for_java(file_path):
-    """
-    For Java
-    """
     class_file = file_path.replace('.java', '')
     print(f"Compiling {file_path}")
     subprocess.run(['javac', file_path], check=True)
@@ -65,21 +54,16 @@ def run_valgrind_for_java(file_path):
     command = ['valgrind', '--leak-check=full', 'java', class_file]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
-    save_json_output(output_json, 'valgrind_report.json')
+    save_json_output(output_json, file_path, 'valgrind_report.json')
 
 def run_valgrind_for_interpreter(file_path, interpreter):
-    """
-    For Python and Perl.
-    """
     print(f"Running Valgrind on {interpreter} for {file_path}")
     command = ['valgrind', '--leak-check=full', interpreter, file_path]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
-    save_json_output(output_json, 'valgrind_report.json')
-
+    save_json_output(output_json, file_path, 'valgrind_report.json')
 
 def process_valgrind_output(result):
-    # Access the stdout attribute, assuming result is a CompletedProcess object
     output = result.stderr
     memory_issues = {
         "uninitialized_value_errors": [],
@@ -118,15 +102,24 @@ def process_valgrind_output(result):
                 in_leak_summary = False
 
     result = {
-        "memory_issues": memory_issues
+        "memory_issues": memory_issues,
+        "error_count": {k: len(v) for k, v in memory_issues.items()}
     }
-
     return result
 
-def save_json_output(output_json, filename):
-    with open(filename, 'w') as json_file:
-        json.dump(output_json, json_file, indent=4)
-        print(f"Valgrind report saved to {filename}")
+def save_json_output(output_json, file_path, filename):
+    result = {
+        "file": os.path.basename(file_path),
+        "date": datetime.now().isoformat(),
+        "results": output_json
+    }
+    results_dir = 'results'
+    os.makedirs(results_dir, exist_ok=True)
+    file_path = os.path.join(results_dir, filename)
+
+    with open(file_path, 'w') as json_file:
+        json.dump(result, json_file, indent=4)
+    print(f"Valgrind report saved to {file_path}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -134,7 +127,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     source_file = sys.argv[1]
-    #source_file = '/mnt/c/Users/taox0/OneDrive/Documents/LLaMa/Test_example/example.py'
 
     if not os.path.exists(source_file):
         print(f"File {source_file} does not exist.")
