@@ -1,0 +1,96 @@
+{
+    "sonarqube": {
+        "components": [
+            {
+                "key": "static-debugging",
+                "name": "Static Analysis Sonarqube",
+                "qualifier": "TRK",
+                "project": "static-debugging"
+            }
+        ],
+        "measures": [
+            {
+                "metric": "vulnerabilities",
+                "value": "0",
+                "bestValue": true
+            },
+            {
+                "metric": "statements",
+                "value": "57"
+            },
+            {
+                "metric": "comment_lines",
+                "value": "20"
+            },
+            {
+                "metric": "code_smells",
+                "value": "3",
+                "bestValue": false
+            },
+            {
+                "metric": "line_coverage",
+                "value": "0.0",
+                "bestValue": false
+            },
+            {
+                "metric": "duplicated_blocks",
+                "value": "0",
+                "bestValue": true
+            },
+            {
+                "metric": "alert_status",
+                "value": "ERROR"
+            },
+            {
+                "metric": "bugs",
+                "value": "0",
+                "bestValue": true
+            },
+            {
+                "metric": "files",
+                "value": "2"
+            },
+            {
+                "metric": "security_rating",
+                "value": "1.0",
+                "bestValue": true
+            },
+            {
+                "metric": "duplicated_lines_density",
+                "value": "0.0",
+                "bestValue": true
+            },
+            {
+                "metric": "comment_lines_density",
+                "value": "17.1",
+                "bestValue": false
+            },
+            {
+                "metric": "coverage",
+                "value": "0.0",
+                "bestValue": false
+            },
+            {
+                "metric": "functions",
+                "value": "2"
+            },
+            {
+                "metric": "classes",
+                "value": "0"
+            },
+            {
+                "metric": "complexity",
+                "value": "2"
+            },
+            {
+                "metric": "reliability_rating",
+                "value": "1.0",
+                "bestValue": true
+            },
+            {
+                "metric": "ncloc",
+                "value": "97"
+            }
+        ]
+    }
+}

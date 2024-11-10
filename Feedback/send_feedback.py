@@ -1,10 +1,15 @@
 import requests
 from app.utils import log_info, log_error
 
-def send_feedback(feedback_data, model_name):
-    """Send feedback data to a specific LLM model."""
-    url = f"https://api.llmprovider.com/models/{model_name}/feedback"
-    payload = {"feedback": feedback_data}
+def send_feedback(feedback_data, student_id, course_id):
+    """Send feedback data to the college feedback API."""
+    url = "http://192.168.1.162:5001/feedback"  # Point to the mock server on the second device
+    
+    payload = {
+        "feedback_data": feedback_data,
+        "student_id": student_id,
+        "course_id": course_id
+    }
 
     try:
         response = requests.post(url, json=payload)
@@ -12,7 +17,7 @@ def send_feedback(feedback_data, model_name):
             log_info("Feedback sent successfully.")
             return True
         else:
-            log_error(f"Failed to send feedback: {response.status_code}")
+            log_error(f"Failed to send feedback: {response.status_code} - {response.text}")
             return False
     except requests.RequestException as e:
         log_error(f"Feedback sending error: {e}")

@@ -26,7 +26,8 @@ def run_valgrind_for_compiled(file_path):
     command = ['valgrind', '--leak-check=full', './' + compiled_program]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
-    save_json_output(output_json, file_path, 'valgrind_report.json')
+    #save_json_output(output_json, file_path, 'valgrind_report.json')
+    return output_json
 
 def compile_program(file_path):
     output_file = 'a.out' if platform.system() != 'Windows' else 'a.exe'
@@ -54,14 +55,16 @@ def run_valgrind_for_java(file_path):
     command = ['valgrind', '--leak-check=full', 'java', class_file]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
-    save_json_output(output_json, file_path, 'valgrind_report.json')
+    #save_json_output(output_json, file_path, 'valgrind_report.json')
+    return output_json
 
 def run_valgrind_for_interpreter(file_path, interpreter):
     print(f"Running Valgrind on {interpreter} for {file_path}")
     command = ['valgrind', '--leak-check=full', interpreter, file_path]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
-    save_json_output(output_json, file_path, 'valgrind_report.json')
+    #save_json_output(output_json, file_path, 'valgrind_report.json')
+    return output_json
 
 def process_valgrind_output(result):
     output = result.stderr

@@ -10,20 +10,32 @@ import json
 import os
 from requests.auth import HTTPBasicAuth
 
-# My sonarqube config for testing, replace with yours
+# SonarQube configuration for testing; replace with your actual credentials
 SONARQUBE_URL = 'http://localhost:9000'
-SONAR_PROJECT_KEY = 'static-debugging' 
+SONAR_PROJECT_KEY = 'static-debugging'
 USERNAME = 'admin'
-PASSWORD = 'urpassword'                   
+PASSWORD = 'Qwer1234!!!!'
 
 def run_sonar_scanner():
+    """Runs the SonarQube scanner and handles errors and outputs."""
+
     if platform.system() != "Linux":
         print("This script is intended to run on Linux.")
         sys.exit(1)
 
-    # Replace with yours
+    # Path configurations; replace with your paths
     sonar_scanner_path = '/mnt/c/Users/taox0/OneDrive/Documents/LLaMa/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner'
-    project_dir = '/mnt/c/Users/taox0/OneDrive/Documents/LLaMa/Test_example'
+    project_dir = '/mnt/c/Users/taox0/OneDrive/Documents/GitHub/Code-Debugging-Project/temp/code_files'
+
+    # Check if paths are correct
+    if not os.path.isfile(sonar_scanner_path):
+        print(f"Sonar scanner path '{sonar_scanner_path}' is invalid.")
+        return False
+    if not os.path.isdir(project_dir):
+        print(f"Project directory '{project_dir}' is invalid.")
+        return False
+    
+    original_dir = os.getcwd()
 
     os.chdir(project_dir)
 
@@ -31,48 +43,79 @@ def run_sonar_scanner():
         result = subprocess.run([sonar_scanner_path], check=True, text=True, capture_output=True)
         print("SonarQube analysis completed successfully.")
         print("Output:\n", result.stdout)
-        return result.returncode == 0
-    
+        return True
     except subprocess.CalledProcessError as e:
         print("An error occurred while running SonarQube analysis.")
         print("Error output:\n", e.stderr)
-        return False
+    except FileNotFoundError:
+        print(f"Sonar scanner not found at path '{sonar_scanner_path}'")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+    finally:
+        os.chdir(original_dir)
+
+    return False
 
 def fetch_detailed_report(project_key, username, password):
-    metrics = (
-    "alert_status,bugs,vulnerabilities,code_smells,coverage,ncloc,complexity,"
-    "duplicated_lines_density,duplicated_blocks,security_rating,reliability_rating,"
-    "comment_lines_density,line_coverage,branch_coverage,complexity_in_classes,"
-    "complexity_in_functions,functions,files,classes,statements,comment_lines,"
-    "public_documented_api_density,public_undocumented_api"
-    )
+    """Fetches the SonarQube analysis report for the given project key."""
     
+    metrics = (
+        "alert_status,bugs,vulnerabilities,code_smells,coverage,ncloc,complexity,"
+        "duplicated_lines_density,duplicated_blocks,security_rating,reliability_rating,"
+        "comment_lines_density,line_coverage,branch_coverage,complexity_in_classes,"
+        "complexity_in_functions,functions,files,classes,statements,comment_lines,"
+        "public_documented_api_density,public_undocumented_api"
+    )
+
     components_url = f"{SONARQUBE_URL}/api/components/search?qualifiers=TRK&componentKeys={project_key}"
     measures_url = f"{SONARQUBE_URL}/api/measures/component?component={project_key}&metricKeys={metrics}"
 
-    response = requests.get(components_url, auth=(username, password))
-    if response.status_code != 200:
-        print(f"Failed to fetch components: {response.status_code} - {response.text}")
-        return None
-    components = response.json()
+    try:
+        # Fetch components
+        response = requests.get(components_url, auth=HTTPBasicAuth(username, password))
+        response.raise_for_status()
+        components = response.json().get('components', [])
+        if not components:
+            print(f"No components found for project key '{project_key}'")
+            return None
 
-    response = requests.get(measures_url, auth=(username, password))
-    if response.status_code != 200:
-        print(f"Failed to fetch measures: {response.status_code} - {response.text}")
-        return None
-    measures = response.json()
+        # Fetch measures
+        response = requests.get(measures_url, auth=HTTPBasicAuth(username, password))
+        response.raise_for_status()
+        measures = response.json().get('component', {}).get('measures', [])
+        if not measures:
+            print(f"No measures found for project key '{project_key}'")
+            return None
 
-    report = {
-        'components': components.get('components', []),
-        'measures': measures['component'].get('measures', [])
-    }
-    return report
+        report = {
+            'components': components,
+            'measures': measures
+        }
+        return report
 
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred while fetching SonarQube report: {http_err}")
+    except requests.exceptions.ConnectionError:
+        print("Failed to connect to SonarQube server. Please check the server status and URL.")
+    except requests.exceptions.Timeout:
+        print("Request to SonarQube server timed out.")
+    except requests.exceptions.RequestException as req_err:
+        print(f"An error occurred while fetching SonarQube report: {req_err}")
+    except json.JSONDecodeError:
+        print("Failed to parse the JSON response from SonarQube.")
+
+    return None
 
 def save_report(report, filename):
-    with open(filename, 'w') as f:
-        json.dump(report, f, indent=4)
-    print(f"Sonarqube report saved to {filename}")
+    """Saves the SonarQube report to a JSON file."""
+    try:
+        with open(filename, 'w') as f:
+            json.dump(report, f, indent=4)
+        print(f"SonarQube report saved to '{filename}'")
+    except IOError as io_err:
+        print(f"Failed to write report to '{filename}': {io_err}")
+    except Exception as e:
+        print(f"Unexpected error while saving report: {e}")
 
 if __name__ == "__main__":
     # Run the SonarQube scanner
@@ -80,6 +123,10 @@ if __name__ == "__main__":
         # Fetch the detailed SonarQube analysis report
         report = fetch_detailed_report(SONAR_PROJECT_KEY, USERNAME, PASSWORD)
 
-        # Save the report
+        # Save the report if fetched successfully
         if report:
             save_report(report, 'sonarqube_report.json')
+        else:
+            print("Failed to retrieve the report from SonarQube.")
+    else:
+        print("SonarQube scanner execution failed.")
