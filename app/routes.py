@@ -107,6 +107,7 @@ def analyze_code():
             safe_remove(temp_dafny_file)
 
 
+'''
 @app_routes.route('/feedback', methods=['POST'])
 def send_feedback_route():
     try:
@@ -137,4 +138,4 @@ def send_feedback_route():
         error_details = traceback.format_exc()
         log_error(f"Error in sending feedback: {error_details}")
         return jsonify({"error": "Internal server error"}), 500
-    
+'''
