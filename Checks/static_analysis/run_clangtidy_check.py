@@ -40,9 +40,10 @@ def run_clang_tidy(file_path, output_file):
                 message = match.group(1)  
                 output["errors"].append(message)
 
-        with open(output_file, 'w') as f:
-            json.dump(output, f, indent=4)
-        print(f"Clangtidy report saved to {output_file}")
+        return output
+        #with open(output_file, 'w') as f:
+            #json.dump(output, f, indent=4)
+        #print(f"Clangtidy report saved to {output_file}")
 
     except Exception as e:
         print(f"An error occurred while running clang-tidy: {e}")

@@ -18,8 +18,8 @@ def run_dafny(file_path):
         "verification_status": "success" if "Dafny program verifier finished with" in result.stdout else "failure"
     }
 
-    with open("dafny_report.json", "w") as json_file:
-        json.dump(report, json_file, indent=4)
+    #with open("dafny_report.json", "w") as json_file:
+        #json.dump(report, json_file, indent=4)
     
     return report
 

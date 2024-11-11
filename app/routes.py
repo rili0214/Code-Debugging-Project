@@ -61,8 +61,7 @@ def analyze_code():
         # Run analyses
         if run_clangtidy:
             print("Running ClangTidy analysis...")
-            #results["clang_tidy"] = run_clangtidy_check(temp_code_file)
-            print("clangtidy")
+            results["clang_tidy"] = run_clang_tidy(temp_code_file)
 
         if run_sonarqube:
             print("Running SonarQube analysis...")
