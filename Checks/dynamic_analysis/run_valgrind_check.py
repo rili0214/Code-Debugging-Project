@@ -22,11 +22,12 @@ def run_valgrind_check(file_path):
 
 def run_valgrind_for_compiled(file_path):
     compiled_program = compile_program(file_path)
-    print(f"Running Valgrind on {compiled_program}")
+    #print(f"Running Valgrind on {compiled_program}")
     command = ['valgrind', '--leak-check=full', './' + compiled_program]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
     #save_json_output(output_json, file_path, 'valgrind_report.json')
+    print("Valgrind analysis completed successfully.")
     return output_json
 
 def compile_program(file_path):
@@ -43,27 +44,29 @@ def compile_program(file_path):
     else:
         raise ValueError(f"Unsupported language for compilation: {file_path}")
     
-    print(f"Compiling {file_path}")
+    #print(f"Compiling {file_path}")
     subprocess.run(compile_cmd, check=True)
     return output_file
 
 def run_valgrind_for_java(file_path):
     class_file = file_path.replace('.java', '')
-    print(f"Compiling {file_path}")
+    #print(f"Compiling {file_path}")
     subprocess.run(['javac', file_path], check=True)
-    print(f"Running Valgrind on JVM for {class_file}")
+    #print(f"Running Valgrind on JVM for {class_file}")
     command = ['valgrind', '--leak-check=full', 'java', class_file]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
     #save_json_output(output_json, file_path, 'valgrind_report.json')
+    print("Valgrind analysis completed successfully.")
     return output_json
 
 def run_valgrind_for_interpreter(file_path, interpreter):
-    print(f"Running Valgrind on {interpreter} for {file_path}")
+    #print(f"Running Valgrind on {interpreter} for {file_path}")
     command = ['valgrind', '--leak-check=full', interpreter, file_path]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
     #save_json_output(output_json, file_path, 'valgrind_report.json')
+    print("Valgrind analysis completed successfully.")
     return output_json
 
 def process_valgrind_output(result):

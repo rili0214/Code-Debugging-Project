@@ -39,6 +39,8 @@ def run_clang_tidy(file_path):
             if match:
                 message = match.group(1)  
                 output["errors"].append(message)
+                
+        print("Clangtidy analysis completed successfully.")
 
         return output
         #with open(output_file, 'w') as f:
