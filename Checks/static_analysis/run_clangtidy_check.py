@@ -7,7 +7,7 @@ import json
 import re
 import sys
 
-def run_clang_tidy(file_path, output_file):
+def run_clang_tidy(file_path):
     if not os.path.isfile(file_path):
         print(f"Error: The file {file_path} does not exist.")
         return

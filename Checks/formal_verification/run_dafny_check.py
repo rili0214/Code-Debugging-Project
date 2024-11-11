@@ -2,7 +2,7 @@ import subprocess
 import json
 import sys
 
-def run_dafny(file_path):
+def run_dafny_code(file_path):
     """
     Run Dafny code from a file, check for verification, and save output to JSON file.
     """
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     file_path = sys.argv[1]
     
     # Run Dafny and save report
-    report = run_dafny(file_path)
+    report = run_dafny_code(file_path)
 
     # Print the report
     print("Dafny Verification Report:")

@@ -8,7 +8,7 @@ from Feedback.send_feedback import send_feedback
 from Checks.static_analysis.run_sonarqube_check import run_sonar_scanner, fetch_detailed_report, SONARQUBE_URL, SONAR_PROJECT_KEY, USERNAME, PASSWORD
 from Checks.static_analysis.run_clangtidy_check import run_clang_tidy
 from Checks.dynamic_analysis.run_valgrind_check import run_valgrind_check
-from Checks.formal_verification.run_dafny_check import run_dafny
+from Checks.formal_verification.run_dafny_check import run_dafny_code
 
 app_routes = Blueprint('app_routes', __name__)
 
@@ -77,7 +77,7 @@ def analyze_code():
 
         if run_dafny:
             print("Running Dafny analysis...")
-            #results["dafny"] = run_dafny_check(temp_dafny_file)
+            results["dafny"] = run_dafny_code(temp_dafny_file)
 
         # Write results to file safely
         with open(RESULTS_FILE, "w") as file:
@@ -130,3 +130,4 @@ def send_feedback_route():
         error_details = traceback.format_exc()
         log_error(f"Error in sending feedback: {error_details}")
         return jsonify({"error": "Internal server error"}), 500
+    

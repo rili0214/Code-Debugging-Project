@@ -10,8 +10,29 @@
         ],
         "measures": [
             {
-                "metric": "vulnerabilities",
-                "value": "1",
+                "metric": "files",
+                "value": "3"
+            },
+            {
+                "metric": "classes",
+                "value": "0"
+            },
+            {
+                "metric": "statements",
+                "value": "3"
+            },
+            {
+                "metric": "functions",
+                "value": "0"
+            },
+            {
+                "metric": "reliability_rating",
+                "value": "1.0",
+                "bestValue": true
+            },
+            {
+                "metric": "comment_lines_density",
+                "value": "0.0",
                 "bestValue": false
             },
             {
@@ -19,8 +40,28 @@
                 "value": "0"
             },
             {
-                "metric": "classes",
+                "metric": "complexity",
                 "value": "0"
+            },
+            {
+                "metric": "code_smells",
+                "value": "0",
+                "bestValue": true
+            },
+            {
+                "metric": "security_rating",
+                "value": "5.0",
+                "bestValue": false
+            },
+            {
+                "metric": "line_coverage",
+                "value": "0.0",
+                "bestValue": false
+            },
+            {
+                "metric": "duplicated_lines_density",
+                "value": "0.0",
+                "bestValue": true
             },
             {
                 "metric": "duplicated_blocks",
@@ -28,7 +69,7 @@
                 "bestValue": true
             },
             {
-                "metric": "comment_lines_density",
+                "metric": "coverage",
                 "value": "0.0",
                 "bestValue": false
             },
@@ -42,54 +83,13 @@
                 "bestValue": true
             },
             {
-                "metric": "line_coverage",
-                "value": "0.0",
+                "metric": "vulnerabilities",
+                "value": "1",
                 "bestValue": false
-            },
-            {
-                "metric": "functions",
-                "value": "0"
-            },
-            {
-                "metric": "complexity",
-                "value": "0"
-            },
-            {
-                "metric": "reliability_rating",
-                "value": "1.0",
-                "bestValue": true
-            },
-            {
-                "metric": "coverage",
-                "value": "0.0",
-                "bestValue": false
-            },
-            {
-                "metric": "files",
-                "value": "4"
-            },
-            {
-                "metric": "code_smells",
-                "value": "0",
-                "bestValue": true
-            },
-            {
-                "metric": "statements",
-                "value": "6"
-            },
-            {
-                "metric": "duplicated_lines_density",
-                "value": "0.0",
-                "bestValue": true
             },
             {
                 "metric": "ncloc",
-                "value": "6"
-            },
-            {
-                "metric": "security_rating",
-                "value": "5.0",
-                "bestValue": false
+                "value": "3"
             }
         ]
     },
@@ -99,16 +99,16 @@
             "invalid_read_errors": [],
             "invalid_write_errors": [],
             "definitely_lost": [
-                "==5296==    definitely lost: 0 bytes in 0 blocks"
+                "==6182==    definitely lost: 0 bytes in 0 blocks"
             ],
             "indirectly_lost": [
-                "==5296==    indirectly lost: 0 bytes in 0 blocks"
+                "==6182==    indirectly lost: 0 bytes in 0 blocks"
             ],
             "possibly_lost": [
-                "==5296==      possibly lost: 0 bytes in 0 blocks"
+                "==6182==      possibly lost: 0 bytes in 0 blocks"
             ],
             "still_reachable": [
-                "==5296==    still reachable: 480,330 bytes in 87 blocks"
+                "==6182==    still reachable: 480,330 bytes in 87 blocks"
             ]
         },
         "error_count": {
@@ -120,5 +120,10 @@
             "possibly_lost": 1,
             "still_reachable": 1
         }
+    },
+    "dafny": {
+        "stdout": "Dafny program verifier finished with 1 verified, 0 errors",
+        "stderr": "",
+        "verification_status": "success"
     }
 }
