@@ -1,114 +1,34 @@
 {
-    "sonarqube": {
-        "components": [
-            {
-                "key": "static-debugging",
-                "name": "Static Analysis Sonarqube",
-                "qualifier": "TRK",
-                "project": "static-debugging"
-            }
-        ],
-        "measures": [
-            {
-                "metric": "files",
-                "value": "3"
-            },
-            {
-                "metric": "classes",
-                "value": "0"
-            },
-            {
-                "metric": "statements",
-                "value": "3"
-            },
-            {
-                "metric": "functions",
-                "value": "0"
-            },
-            {
-                "metric": "reliability_rating",
-                "value": "1.0",
-                "bestValue": true
-            },
-            {
-                "metric": "comment_lines_density",
-                "value": "0.0",
-                "bestValue": false
-            },
-            {
-                "metric": "comment_lines",
-                "value": "0"
-            },
-            {
-                "metric": "complexity",
-                "value": "0"
-            },
-            {
-                "metric": "code_smells",
-                "value": "0",
-                "bestValue": true
-            },
-            {
-                "metric": "security_rating",
-                "value": "5.0",
-                "bestValue": false
-            },
-            {
-                "metric": "line_coverage",
-                "value": "0.0",
-                "bestValue": false
-            },
-            {
-                "metric": "duplicated_lines_density",
-                "value": "0.0",
-                "bestValue": true
-            },
-            {
-                "metric": "duplicated_blocks",
-                "value": "0",
-                "bestValue": true
-            },
-            {
-                "metric": "coverage",
-                "value": "0.0",
-                "bestValue": false
-            },
-            {
-                "metric": "alert_status",
-                "value": "ERROR"
-            },
-            {
-                "metric": "bugs",
-                "value": "0",
-                "bestValue": true
-            },
-            {
-                "metric": "vulnerabilities",
-                "value": "1",
-                "bestValue": false
-            },
-            {
-                "metric": "ncloc",
-                "value": "3"
-            }
-        ]
-    },
+    "python static analysis": [
+        {
+            "tool": "mypy",
+            "output": "Success: no issues found in 1 source file\n"
+        },
+        {
+            "tool": "pylint",
+            "output": "************* Module code_files.temp_code_4cc4999d-780c-496c-a56f-602f41c9788b\ntemp/code_files/temp_code_4cc4999d-780c-496c-a56f-602f41c9788b.py:1:5: C0303: Trailing whitespace (trailing-whitespace)\ntemp/code_files/temp_code_4cc4999d-780c-496c-a56f-602f41c9788b.py:2:5: C0303: Trailing whitespace (trailing-whitespace)\ntemp/code_files/temp_code_4cc4999d-780c-496c-a56f-602f41c9788b.py:3:0: C0304: Final newline missing (missing-final-newline)\ntemp/code_files/temp_code_4cc4999d-780c-496c-a56f-602f41c9788b.py:1:0: C0114: Missing module docstring (missing-module-docstring)\ntemp/code_files/temp_code_4cc4999d-780c-496c-a56f-602f41c9788b.py:1:0: C0103: Module name \"temp_code_4cc4999d-780c-496c-a56f-602f41c9788b\" doesn't conform to snake_case naming style (invalid-name)\ntemp/code_files/temp_code_4cc4999d-780c-496c-a56f-602f41c9788b.py:1:0: C0103: Constant name \"a\" doesn't conform to UPPER_CASE naming style (invalid-name)\ntemp/code_files/temp_code_4cc4999d-780c-496c-a56f-602f41c9788b.py:2:0: C0103: Constant name \"b\" doesn't conform to UPPER_CASE naming style (invalid-name)\ntemp/code_files/temp_code_4cc4999d-780c-496c-a56f-602f41c9788b.py:3:0: C0103: Constant name \"c\" doesn't conform to UPPER_CASE naming style (invalid-name)\n\n-----------------------------------\nYour code has been rated at 0.00/10\n\n"
+        },
+        {
+            "tool": "bandit",
+            "output": "Run started:2024-11-10 14:39:20.161979\n\nTest results:\n\tNo issues identified.\n\nCode scanned:\n\tTotal lines of code: 3\n\tTotal lines skipped (#nosec): 0\n\tTotal potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0\n\nRun metrics:\n\tTotal issues (by severity):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\n\tTotal issues (by confidence):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\nFiles skipped (0):\n"
+        }
+    ],
     "valgrind": {
         "memory_issues": {
             "uninitialized_value_errors": [],
             "invalid_read_errors": [],
             "invalid_write_errors": [],
             "definitely_lost": [
-                "==6182==    definitely lost: 0 bytes in 0 blocks"
+                "==6695==    definitely lost: 0 bytes in 0 blocks"
             ],
             "indirectly_lost": [
-                "==6182==    indirectly lost: 0 bytes in 0 blocks"
+                "==6695==    indirectly lost: 0 bytes in 0 blocks"
             ],
             "possibly_lost": [
-                "==6182==      possibly lost: 0 bytes in 0 blocks"
+                "==6695==      possibly lost: 0 bytes in 0 blocks"
             ],
             "still_reachable": [
-                "==6182==    still reachable: 480,330 bytes in 87 blocks"
+                "==6695==    still reachable: 480,330 bytes in 87 blocks"
             ]
         },
         "error_count": {

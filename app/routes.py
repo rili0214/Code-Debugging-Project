@@ -7,16 +7,18 @@ from app.utils import extract_code_from_input, save_code_to_temp, safe_remove, l
 from Feedback.send_feedback import send_feedback
 from Checks.static_analysis.run_sonarqube_check import run_sonar_scanner, fetch_detailed_report, SONARQUBE_URL, SONAR_PROJECT_KEY, USERNAME, PASSWORD
 from Checks.static_analysis.run_clangtidy_check import run_clang_tidy
+from Checks.static_analysis.run_py_check import run_pystatic_analysis
 from Checks.dynamic_analysis.run_valgrind_check import run_valgrind_check
 from Checks.formal_verification.run_dafny_check import run_dafny_code
 
 app_routes = Blueprint('app_routes', __name__)
 
 # Define supported languages
+python_lang = ["Python"]
 clangtidy_lang = ["C", "C++"]
 sonarqube_lang = ["Java", "C#", "JavaScript", "TypeScript", "CloudFormation", "Terraform", 
                   "Docker", "Kubernetes", "Helm Charts", "Kotlin", "Ruby", "Go", "Scala", 
-                  "Flex", "Python", "PHP", "HTML", "CSS", "XML", "VB.NET"]
+                  "Flex", "PHP", "HTML", "CSS", "XML", "VB.NET"]
 valgrind_lang = ["C", "C++", "Fortran", "Ada", "Assembly", "Java", "Python", "Perl"]
 dafny_lang = ["C#", "Go", "Python", "Java", "JavaScript"]
 
@@ -45,6 +47,7 @@ def analyze_code():
             return jsonify({"error": "Code and language fields are required"}), 400
 
         # Tool selection based on language
+        run_pystatic = language in python_lang
         run_clangtidy = language in clangtidy_lang
         run_sonarqube = language in sonarqube_lang
         run_valgrind = language in valgrind_lang
@@ -59,6 +62,10 @@ def analyze_code():
         results = {}
 
         # Run analyses
+        if run_pystatic:
+            print("Running Python static analysis...")
+            results["python static analysis"] = run_pystatic_analysis(temp_code_file)
+
         if run_clangtidy:
             print("Running ClangTidy analysis...")
             results["clang_tidy"] = run_clang_tidy(temp_code_file)
