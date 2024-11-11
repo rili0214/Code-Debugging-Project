@@ -2,5 +2,5 @@ projectKey=static-debugging
 serverUrl=http://localhost:9000
 serverVersion=10.7.0.96327
 dashboardUrl=http://localhost:9000/dashboard?id=static-debugging
-ceTaskId=4f2f53de-f847-4276-bcc6-1318277ade18
-ceTaskUrl=http://localhost:9000/api/ce/task?id=4f2f53de-f847-4276-bcc6-1318277ade18
+ceTaskId=891700c1-0926-42ea-aa8d-103a84a67728
+ceTaskUrl=http://localhost:9000/api/ce/task?id=891700c1-0926-42ea-aa8d-103a84a67728
