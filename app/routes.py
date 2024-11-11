@@ -60,10 +60,12 @@ def analyze_code():
 
         # Run analyses
         if run_clangtidy:
+            print("Running ClangTidy analysis...")
             #results["clang_tidy"] = run_clangtidy_check(temp_code_file)
             print("clangtidy")
 
         if run_sonarqube:
+            print("Running SonarQube analysis...")
             if run_sonar_scanner():
                 report = fetch_detailed_report(SONAR_PROJECT_KEY, USERNAME, PASSWORD)
                 results["sonarqube"] = report
@@ -71,11 +73,12 @@ def analyze_code():
                 print("SonarQube scanner execution failed.")
 
         if run_valgrind:
+            print("Running Valgrind analysis...")
             results["valgrind"] = run_valgrind_check(temp_code_file)
 
         if run_dafny:
+            print("Running Dafny analysis...")
             #results["dafny"] = run_dafny_check(temp_dafny_file)
-            print("dafny")
 
         # Write results to file safely
         with open(RESULTS_FILE, "w") as file:

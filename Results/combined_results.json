@@ -11,31 +11,26 @@
         "measures": [
             {
                 "metric": "vulnerabilities",
-                "value": "0",
-                "bestValue": true
-            },
-            {
-                "metric": "statements",
-                "value": "57"
+                "value": "1",
+                "bestValue": false
             },
             {
                 "metric": "comment_lines",
-                "value": "20"
+                "value": "0"
             },
             {
-                "metric": "code_smells",
-                "value": "3",
-                "bestValue": false
-            },
-            {
-                "metric": "line_coverage",
-                "value": "0.0",
-                "bestValue": false
+                "metric": "classes",
+                "value": "0"
             },
             {
                 "metric": "duplicated_blocks",
                 "value": "0",
                 "bestValue": true
+            },
+            {
+                "metric": "comment_lines_density",
+                "value": "0.0",
+                "bestValue": false
             },
             {
                 "metric": "alert_status",
@@ -47,40 +42,17 @@
                 "bestValue": true
             },
             {
-                "metric": "files",
-                "value": "2"
-            },
-            {
-                "metric": "security_rating",
-                "value": "1.0",
-                "bestValue": true
-            },
-            {
-                "metric": "duplicated_lines_density",
-                "value": "0.0",
-                "bestValue": true
-            },
-            {
-                "metric": "comment_lines_density",
-                "value": "17.1",
-                "bestValue": false
-            },
-            {
-                "metric": "coverage",
+                "metric": "line_coverage",
                 "value": "0.0",
                 "bestValue": false
             },
             {
                 "metric": "functions",
-                "value": "2"
-            },
-            {
-                "metric": "classes",
                 "value": "0"
             },
             {
                 "metric": "complexity",
-                "value": "2"
+                "value": "0"
             },
             {
                 "metric": "reliability_rating",
@@ -88,9 +60,65 @@
                 "bestValue": true
             },
             {
+                "metric": "coverage",
+                "value": "0.0",
+                "bestValue": false
+            },
+            {
+                "metric": "files",
+                "value": "4"
+            },
+            {
+                "metric": "code_smells",
+                "value": "0",
+                "bestValue": true
+            },
+            {
+                "metric": "statements",
+                "value": "6"
+            },
+            {
+                "metric": "duplicated_lines_density",
+                "value": "0.0",
+                "bestValue": true
+            },
+            {
                 "metric": "ncloc",
-                "value": "97"
+                "value": "6"
+            },
+            {
+                "metric": "security_rating",
+                "value": "5.0",
+                "bestValue": false
             }
         ]
+    },
+    "valgrind": {
+        "memory_issues": {
+            "uninitialized_value_errors": [],
+            "invalid_read_errors": [],
+            "invalid_write_errors": [],
+            "definitely_lost": [
+                "==5296==    definitely lost: 0 bytes in 0 blocks"
+            ],
+            "indirectly_lost": [
+                "==5296==    indirectly lost: 0 bytes in 0 blocks"
+            ],
+            "possibly_lost": [
+                "==5296==      possibly lost: 0 bytes in 0 blocks"
+            ],
+            "still_reachable": [
+                "==5296==    still reachable: 480,330 bytes in 87 blocks"
+            ]
+        },
+        "error_count": {
+            "uninitialized_value_errors": 0,
+            "invalid_read_errors": 0,
+            "invalid_write_errors": 0,
+            "definitely_lost": 1,
+            "indirectly_lost": 1,
+            "possibly_lost": 1,
+            "still_reachable": 1
+        }
     }
 }

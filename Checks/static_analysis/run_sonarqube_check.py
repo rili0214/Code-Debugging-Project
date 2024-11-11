@@ -40,9 +40,10 @@ def run_sonar_scanner():
     os.chdir(project_dir)
 
     try:
-        result = subprocess.run([sonar_scanner_path], check=True, text=True, capture_output=True)
+        #result = subprocess.run([sonar_scanner_path], check=True, text=True, capture_output=True)
+        subprocess.run([sonar_scanner_path], check=True, text=True, capture_output=True)
         print("SonarQube analysis completed successfully.")
-        print("Output:\n", result.stdout)
+        #print("Output:\n", result.stdout)
         return True
     except subprocess.CalledProcessError as e:
         print("An error occurred while running SonarQube analysis.")
