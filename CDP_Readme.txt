@@ -12,6 +12,7 @@ project_postgeneation_root/
 ├── checks/                 # Directory for different checks
 │   ├── static_analysis/    # Static analysis checking
 │   │   ├── __init__.py
+│   │   ├── run_py_check.py          # Run Banddit, mypy, an pylint for Python
 │   │   ├── run_clangtidy_check.py   # Run clang-tidy for C/C++
 │   │   └── run_sonarqube_check.py   # Run SonarQube for other languages
 │   ├── dynamic_analysis/   # Dynamic analysis checking
