@@ -41,7 +41,7 @@ def analyze_code():
         print(f"Received data: {data}")
 
         # Extract and validate input
-        code, dafny_code, language = extract_code_from_input(data)
+        model, code, dafny_code, language = extract_code_from_input(data)
         if not code or not language:
             print("Missing code or language")
             return jsonify({"error": "Code and language fields are required"}), 400
@@ -60,7 +60,8 @@ def analyze_code():
 
         # Results dictionary
         results = {}
-
+        results["model"] = model
+        
         # Run analyses
         if run_pystatic:
             print("Running Python static analysis...")
