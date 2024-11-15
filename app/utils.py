@@ -12,11 +12,12 @@ logger = logging.getLogger(__name__)
 
 def extract_code_from_input(data):
     """Extract code and language information from the API input."""
+    mode = data.get("mode")
     model = data.get("model")
     code = data.get("code")
     dafny_code = data.get("dafny_code")
     language = data.get("language")
-    return model, code, dafny_code, language
+    return mode, model, code, dafny_code, language
 
 def save_code_to_temp(code, language):
     """Save code to a temporary file based on the provided language."""
