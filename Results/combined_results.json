@@ -1,17 +1,42 @@
 {
     "model": "sample_model",
-    "python static analysis": [
-        {
-            "tool": "mypy",
-            "output": "Success: no issues found in 1 source file\n"
+    "generated_code": "#include <iostream>\nint main() { std::cout << \"Hello, World!\"; return 0; }",
+    "clang_tidy": {
+        "file": "temp/code_files/temp_code_52913064-d187-47c6-b752-efe3dfe24d16.cpp",
+        "status": "success",
+        "command": "clang-tidy temp/code_files/temp_code_52913064-d187-47c6-b752-efe3dfe24d16.cpp --checks=*,-clang-diagnostic*-warning -- -Werror",
+        "errors": [],
+        "warnings": [],
+        "return_code": 0
+    },
+    "valgrind": {
+        "memory_issues": {
+            "uninitialized_value_errors": [],
+            "invalid_read_errors": [],
+            "invalid_write_errors": [],
+            "definitely_lost": [],
+            "indirectly_lost": [],
+            "possibly_lost": [],
+            "still_reachable": []
         },
-        {
-            "tool": "pylint",
-            "output": "************* Module code_files.temp_code_f84c591c-fb30-4eee-b337-4feb879b7c9f\ntemp/code_files/temp_code_f84c591c-fb30-4eee-b337-4feb879b7c9f.py:2:0: C0304: Final newline missing (missing-final-newline)\ntemp/code_files/temp_code_f84c591c-fb30-4eee-b337-4feb879b7c9f.py:1:0: C0114: Missing module docstring (missing-module-docstring)\ntemp/code_files/temp_code_f84c591c-fb30-4eee-b337-4feb879b7c9f.py:1:0: C0103: Module name \"temp_code_f84c591c-fb30-4eee-b337-4feb879b7c9f\" doesn't conform to snake_case naming style (invalid-name)\ntemp/code_files/temp_code_f84c591c-fb30-4eee-b337-4feb879b7c9f.py:1:0: C0116: Missing function or method docstring (missing-function-docstring)\n\n-----------------------------------\nYour code has been rated at 0.00/10\n\n"
-        },
-        {
-            "tool": "bandit",
-            "output": "Run started:2024-11-14 17:00:17.564028\n\nTest results:\n\tNo issues identified.\n\nCode scanned:\n\tTotal lines of code: 2\n\tTotal lines skipped (#nosec): 0\n\tTotal potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0\n\nRun metrics:\n\tTotal issues (by severity):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\n\tTotal issues (by confidence):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\nFiles skipped (0):\n"
+        "error_count": {
+            "uninitialized_value_errors": 0,
+            "invalid_read_errors": 0,
+            "invalid_write_errors": 0,
+            "definitely_lost": 0,
+            "indirectly_lost": 0,
+            "possibly_lost": 0,
+            "still_reachable": 0
         }
-    ]
+    },
+    "dafny": {
+        "verification_status": "no code provided"
+    },
+    "evaluation_score": {
+        "stsatic_analysis_score": 0,
+        "dynamic_analysis_score": 10,
+        "formal_veriofication_score": 0,
+        "rankme_score": 2.4494897427831783,
+        "final_score": 3.244948974278318
+    }
 }

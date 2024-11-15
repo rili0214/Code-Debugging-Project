@@ -1,6 +1,9 @@
 import os
 import uuid
+import glob
 import logging
+import json
+from Checks.rankme.rankme import compute_rankme_score, preprocess_text
 
 TEMP_DIR = "temp/code_files"
 
@@ -73,3 +76,72 @@ def log_info(message):
 
 def log_error(message):
     logger.error(message)
+
+def cleanup_java_temp_files(directory):
+    # Remove all .java and .class files in the specified directory
+    for temp_file in glob.glob(os.path.join(directory, "*.java")) + glob.glob(os.path.join(directory, "*.class")):
+        try:
+            os.remove(temp_file)
+            print(f"Removed temporary file: {temp_file}")
+        except OSError as e:
+            print(f"Error removing file {temp_file}: {e}")
+
+def calculate_scores(data, mode):
+    static_score, valgrind_score, dafny_score, rankme_score = 0, 0, 0, 0
+    # Python Static Analysis Scores
+    if "python static analysis" in data:
+        mypy_score = 10 if "Success" in data["python static analysis"][0]["output"] else 0
+        pylint_score = float(data["python static analysis"][1]["output"].split("rated at")[1].split("/10")[0].strip())
+        bandit_score = 10 if "No issues identified" in data["python static analysis"][2]["output"] else 0
+        static_score = (mypy_score + pylint_score + bandit_score) / 3
+
+    # Clanmgtidy Scores
+    if "clang-tidy" in data:
+        clangtidy = data.get("clang-tidy", {})
+        warnings = clangtidy.get("warnings", 0)
+        errors = clangtidy.get("errors", 0)
+        if errors > 0:
+            static_score = 0  
+        elif warnings <= 5:
+            static_score = 10 - warnings  
+        elif warnings <= 15:
+            static_score = max(5, 10 - warnings)  
+        else:
+            static_score = 0  
+
+    # SonarQube Score
+    if "sonarqube" in data:
+        sonarqube_measures = {m["metric"]: float(m["value"]) for m in data["sonarqube"]["measures"]}
+        bugs_score = 10 if sonarqube_measures["bugs"] == 0 else 0
+        vulnerabilities_score = 10 if sonarqube_measures["vulnerabilities"] == 0 else 0
+        complexity_score = max(0, 10 - sonarqube_measures["complexity"])
+        coverage_score = max(0, 10 * sonarqube_measures["line_coverage"] / 100)
+        duplicated_score = 10 if sonarqube_measures["duplicated_lines_density"] == 0 else 0
+        static_score = (bugs_score + vulnerabilities_score + complexity_score + coverage_score + duplicated_score) / 5
+
+    if mode == "mode_2":
+        # Valgrind Score
+        valgrind = data["valgrind"]
+        valgrind_score = 5 if "still reachable" in valgrind["memory_issues"] else 10
+
+        # Dafny Score
+        dafny_score = 10 if "success" in data["dafny"]["verification_status"] else 0
+
+        # Rankme Score
+        split_texts = preprocess_text(data["generated_code"])
+        rankme_score = compute_rankme_score(split_texts)
+
+    final_score = (static_score * 0.4 + valgrind_score * 0.3 + dafny_score * 0.2 + rankme_score * 0.1) if mode == "mode_2" else static_score
+    
+    # Final Weighted Score
+    if mode == "mode_1":
+        return {"stsatic_analysis": static_score, "final_score": final_score}
+    else:
+        return {
+            "stsatic_analysis_score": static_score,
+            "dynamic_analysis_score": valgrind_score,
+            "formal_veriofication_score": dafny_score,
+            "rankme_score": rankme_score,
+            "final_score": final_score
+        }
+

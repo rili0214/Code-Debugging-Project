@@ -3,7 +3,7 @@ import json
 import uuid
 import traceback
 from flask import Blueprint, request, jsonify
-from app.utils import extract_code_from_input, save_code_to_temp, safe_remove, log_info, log_error
+from app.utils import extract_code_from_input, save_code_to_temp, safe_remove, log_info, log_error, cleanup_java_temp_files, calculate_scores
 from Checks.static_analysis.run_sonarqube_check import run_sonar_scanner, fetch_detailed_report, SONAR_PROJECT_KEY, USERNAME, PASSWORD
 from Checks.static_analysis.run_clangtidy_check import run_clang_tidy
 from Checks.static_analysis.run_py_check import run_pystatic_analysis
@@ -54,12 +54,11 @@ def analyze_code():
 
         # Generate unique temp file for each request
         temp_code_file = save_code_to_temp(code, language)
-        if run_dafny and dafny_code:
-            temp_dafny_file = save_code_to_temp(dafny_code, "dfy")
-
+        
         # Results dictionary
         results = {}
         results["model"] = model
+        results["generated_code"] = code
         
         # Run analyses
         if run_pystatic:
@@ -77,14 +76,20 @@ def analyze_code():
                 results["sonarqube"] = report
             else:
                 print("SonarQube scanner execution failed.")
+
         if mode == "mode_2":
             if run_valgrind:
                 print("Running Valgrind analysis...")
                 results["valgrind"] = run_valgrind_check(temp_code_file)
 
-            if run_dafny:
+            if run_dafny and dafny_code:
+                temp_dafny_file = save_code_to_temp(dafny_code, "dfy")
                 print("Running Dafny analysis...")
                 results["dafny"] = run_dafny_code(temp_dafny_file)
+            else:
+                results["dafny"] = {"verification_status": "no code provided"}
+
+        results["evaluation_score"] = calculate_scores(results, mode)
 
         # Write results to file safely
         with open(RESULTS_FILE, "w") as file:
@@ -105,3 +110,4 @@ def analyze_code():
             safe_remove(temp_code_file)
         if temp_dafny_file:
             safe_remove(temp_dafny_file)
+        cleanup_java_temp_files(TEMP_DIR)

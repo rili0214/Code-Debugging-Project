@@ -1,40 +1,75 @@
+from collections import Counter
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import TruncatedSVD
 import numpy as np
-from transformers import AutoTokenizer, AutoModelForCausalLM
-import torch
-import requests
+import re
 
-def compute_rankme(Z, epsilon=1e-7):
-    U, sigma, Vt = np.linalg.svd(Z, full_matrices=False)
-    sigma_sum = np.sum(sigma) + epsilon
-    p_k = sigma / sigma_sum
-    entropy = -np.sum(p_k * np.log(p_k + epsilon))
-    rankme = np.exp(entropy)
-    return rankme
+# Function to preprocess the input text
+def preprocess_text(text):
+    """
+    Splits the text into meaningful segments based on semicolons and newlines.
+    """
+    return [segment.strip() for segment in re.split(r'[;\n]', text) if segment.strip()]
 
-model_name = "meta-llama/Llama-3.2-3B-Instruct"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name, output_hidden_states=True)
+# Function to filter tokens (e.g., remove non-alphanumeric or short tokens)
+def filter_tokens(tokens):
+    """
+    Filters out non-alphanumeric tokens and those with a length <= 1.
+    """
+    return [token for token in tokens if token.isalnum() and len(token) > 1]
 
-buggy_code = "def quicksort(arr): if len(arr) <= 1: return arr else: pivot = arr[0] return quicksort([x for x in arr[1:] if x <= pivot]) + [pivot] + quicksort([x for x in arr[1:] if x > pivot])"
+# Function to compute entropy
+def compute_entropy(token_counts):
+    total_tokens = sum(token_counts.values())
+    if total_tokens == 0:
+        raise ValueError("Token counts cannot be empty.")
+    probabilities = [count / total_tokens for count in token_counts.values()]
+    return -sum(p * np.log(p) for p in probabilities if p > 0)
 
-huggingface_api_token = "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"
-headers = {"Authorization": f"Bearer {huggingface_api_token}"}
-url = f"https://api-inference.huggingface.co/models/{model_name}"
-prompt = f"Debug the following Python code:\n\n{buggy_code}\n\nCorrected code:"
+# Function to compute the average entropy of the texts
+def compute_text_entropy(texts):
+    entropies = []
+    for text in texts:
+        tokens = filter_tokens(text.split())
+        token_counts = Counter(tokens)
+        if not token_counts:
+            continue
+        entropy = compute_entropy(token_counts)
+        entropies.append(entropy)
+    if not entropies:
+        raise ValueError("All texts are empty or contain no valid tokens.")
+    return np.mean(entropies)
 
-response = requests.post(url, headers=headers, json={"inputs": prompt})
-corrected_code = response.json().get('generated_text', '')
+# Function to compute complexity using SVD
+def compute_svd_complexity(texts):
+    if not texts or all(len(t.strip()) == 0 for t in texts):
+        raise ValueError("Input texts are empty or invalid.")
+    vectorizer = CountVectorizer(stop_words=None)
+    X = vectorizer.fit_transform(texts)
+    if X.shape[0] == 0 or X.shape[1] == 0:
+        raise ValueError("Input matrix for SVD is empty.")
+    svd = TruncatedSVD(n_components=1)
+    svd.fit(X)
+    return svd.singular_values_[0]
 
-print(f"Corrected Code:\n{corrected_code}")
+# Function to compute the RankMe score
+def compute_rankme_score(texts):
+    avg_entropy = compute_text_entropy(texts)
+    complexity = compute_svd_complexity(texts)
+    return np.exp(avg_entropy) * complexity
 
-inputs = tokenizer(corrected_code, return_tensors="pt")
-
-with torch.no_grad():
-    outputs = model(**inputs)
-
-hidden_states = outputs.hidden_states[-1]
-
-sequence_embedding = hidden_states.mean(dim=1).numpy()
-
-rankme_score = compute_rankme(sequence_embedding)
-print(f"RankMe Score: {rankme_score}")
+if __name__ == "__main__":
+    # Example text
+    generated_texts = [
+        "#include <iostream>\nint main() { std::cout << \"Hello, World!\"; return 0; }"
+    ]
+    
+    # Preprocessing the text
+    split_texts = preprocess_text(generated_texts[0])  # Process the first (or all) generated texts
+    print(f"Preprocessed Text: {split_texts}")
+    try:
+        # Compute RankMe score
+        rankme_score = compute_rankme_score(split_texts)
+        print(f"RankMe Score: {rankme_score}")
+    except ValueError as e:
+        print(f"Error: {e}")

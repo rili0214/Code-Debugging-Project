@@ -49,16 +49,43 @@ def compile_program(file_path):
     return output_file
 
 def run_valgrind_for_java(file_path):
+    # Ensure the file has a .java extension
+    if not file_path.endswith('.java'):
+        print(f"Error: The file {file_path} is not a Java file.")
+        return None
+
+    # Read the code to extract the class name if public
+    with open(file_path, 'r') as f:
+        code = f.read()
+
+    # Check if there's a public class declaration
+    match = re.search(r'public class (\w+)', code)
+    if match:
+        class_name = match.group(1)
+        new_file_path = os.path.join(os.path.dirname(file_path), f"{class_name}.java")
+        os.rename(file_path, new_file_path)
+        file_path = new_file_path
+
+    # Compile the Java file
+    try:
+        subprocess.run(['javac', file_path], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Compilation failed: {e}")
+        return None
+    
+    # Run Valgrind on the Java class
     class_file = file_path.replace('.java', '')
-    #print(f"Compiling {file_path}")
-    subprocess.run(['javac', file_path], check=True)
-    #print(f"Running Valgrind on JVM for {class_file}")
     command = ['valgrind', '--leak-check=full', 'java', class_file]
-    result = subprocess.run(command, capture_output=True, text=True)
+    try:
+        result = subprocess.run(command, capture_output=True, text=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Valgrind execution failed: {e}")
+        return None
     output_json = process_valgrind_output(result)
-    #save_json_output(output_json, file_path, 'valgrind_report.json')
+    
     print("Valgrind analysis completed successfully.")
     return output_json
+
 
 def run_valgrind_for_interpreter(file_path, interpreter):
     #print(f"Running Valgrind on {interpreter} for {file_path}")

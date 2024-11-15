@@ -6,6 +6,9 @@ def run_dafny_code(file_path):
     """
     Run Dafny code from a file, check for verification, and save output to JSON file.
     """
+    if not file_path:
+        return {"error": "No file path provided for Dafny code analysis"}
+    
     result = subprocess.run(
         ["/home/xym410102/dafny/Scripts/dafny", "verify", file_path], 
         capture_output=True, 
