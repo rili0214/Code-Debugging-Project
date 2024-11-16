@@ -9,6 +9,7 @@ from Checks.static_analysis.run_clangtidy_check import run_clang_tidy
 from Checks.static_analysis.run_py_check import run_pystatic_analysis
 from Checks.dynamic_analysis.run_valgrind_check import run_valgrind_check
 from Checks.formal_verification.run_dafny_check import run_dafny_code
+from app.get_code import extract_and_select_best_code_block
 
 app_routes = Blueprint('app_routes', __name__)
 
@@ -40,10 +41,12 @@ def analyze_code():
         print(f"Received data: {data}")
 
         # Extract and validate input
-        mode, model, code, dafny_code, language = extract_code_from_input(data)
-        if not code or not language:
+        mode, model, text, dafny_text, language = extract_code_from_input(data)
+        if not text or not language:
             print("Missing code or language")
-            return jsonify({"error": "Code and language fields are required"}), 400
+            return jsonify({"error": "Output and language fields are required"}), 400
+        
+        code, dafny_code = extract_and_select_best_code_block(text), extract_and_select_best_code_block(dafny_text)
 
         # Tool selection based on language
         run_pystatic = language in python_lang
