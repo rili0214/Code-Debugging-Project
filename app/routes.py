@@ -46,7 +46,12 @@ def analyze_code():
             print("Missing code or language")
             return jsonify({"error": "Output and language fields are required"}), 400
         
-        code, dafny_code = extract_and_select_best_code_block(text), extract_and_select_best_code_block(dafny_text)
+        code = extract_and_select_best_code_block(text)
+
+        if dafny_text is None:
+            dafny_code = ""
+        else:
+            dafny_code = extract_and_select_best_code_block(dafny_text)
 
         # Tool selection based on language
         run_pystatic = language in python_lang
