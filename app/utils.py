@@ -12,7 +12,7 @@ os.makedirs(TEMP_DIR, exist_ok=True)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
+    
 def extract_code_from_input(data):
     """Extract code and language information from the API input."""
     mode = data.get("mode")
@@ -111,7 +111,10 @@ def calculate_scores(data, mode):
 
     # SonarQube Score
     if "sonarqube" in data:
-        sonarqube_measures = {m["metric"]: float(m["value"]) for m in data["sonarqube"]["measures"]}
+        sonarqube_measures = {
+            m["metric"]: float(m["value"]) if m["value"].replace('.', '', 1).isdigit() else 0 
+            for m in data["sonarqube"]["measures"]
+        }
         bugs_score = 10 if sonarqube_measures["bugs"] == 0 else 0
         vulnerabilities_score = 10 if sonarqube_measures["vulnerabilities"] == 0 else 0
         complexity_score = max(0, 10 - sonarqube_measures["complexity"])
@@ -121,11 +124,13 @@ def calculate_scores(data, mode):
 
     if mode == "mode_2":
         # Valgrind Score
-        valgrind = data["valgrind"]
-        valgrind_score = 5 if "still reachable" in valgrind["memory_issues"] else 10
+        if "valgrind" in data:
+            valgrind = data["valgrind"]
+            valgrind_score = 5 if "still reachable" in valgrind["memory_issues"] else 10
 
         # Dafny Score
-        dafny_score = 10 if "success" in data["dafny"]["verification_status"] else 0
+        if "dafny" in data:
+            dafny_score = 10 if "success" in data["dafny"]["verification_status"] else 0
 
         # Rankme Score
         split_texts = preprocess_text(data["generated_code"])

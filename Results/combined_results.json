@@ -1,58 +1,42 @@
 {
     "model": "llama",
-    "generated_code": "def flatten_list(input_list):\n    if not isinstance(input_list, list):\n        return [input_list]\n    if input_list == []:\n        return []\n    return input_list + flatten_list([item for sublist in input_list for item in sublist])\n\n# Test 1: Flattening a list of integers\nprint(flatten_list([1, 2, 3]))  # Expected: [1, 2, 3]\n\n# Test 2: Flattening a nested list\nprint(flatten_list([[1, 2], [3, 4], [5]]))  # Expected: [1, 2, 3, 4, 5]",
-    "python static analysis": [
-        {
-            "tool": "mypy",
-            "output": "Success: no issues found in 1 source file\n"
-        },
-        {
-            "tool": "pylint",
-            "output": "************* Module temp_code_d4853a80-907f-4b3f-a5cd-70ac3887c8a4\ntemp/code_files/temp_code_d4853a80-907f-4b3f-a5cd-70ac3887c8a4.py:12:0: C0304: Final newline missing (missing-final-newline)\ntemp/code_files/temp_code_d4853a80-907f-4b3f-a5cd-70ac3887c8a4.py:1:0: C0114: Missing module docstring (missing-module-docstring)\ntemp/code_files/temp_code_d4853a80-907f-4b3f-a5cd-70ac3887c8a4.py:1:0: C0103: Module name \"temp_code_d4853a80-907f-4b3f-a5cd-70ac3887c8a4\" doesn't conform to snake_case naming style (invalid-name)\ntemp/code_files/temp_code_d4853a80-907f-4b3f-a5cd-70ac3887c8a4.py:1:0: C0116: Missing function or method docstring (missing-function-docstring)\n\n-----------------------------------\nYour code has been rated at 5.00/10\n\n"
-        },
-        {
-            "tool": "bandit",
-            "output": "Run started:2024-11-15 10:35:35.867633\n\nTest results:\n\tNo issues identified.\n\nCode scanned:\n\tTotal lines of code: 8\n\tTotal lines skipped (#nosec): 0\n\tTotal potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0\n\nRun metrics:\n\tTotal issues (by severity):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\n\tTotal issues (by confidence):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\nFiles skipped (0):\n"
-        }
-    ],
+    "generated_code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nvector<int> flattenList(const vector<vector<int>>& inputList) {\n    vector<int> result;\n    for (const auto& sublist : inputList) {\n        result.insert(result.end(), sublist.begin(), sublist.end());\n    }\n    return result;\n}\n\nint main() {\n    vector<vector<int>> nestedList = {{1, 2}, {3, 4}, {5}};\n    vector<int> flatList = flattenList(nestedList);\n    for (int num : flatList) {\n        cout << num << \" \";\n    }\n    return 0;\n}",
+    "clang_tidy": {
+        "file": "temp/code_files/temp_code_d5c508e3-b57e-4f7a-abb2-bc1d9f1d76bc.cpp",
+        "status": "success",
+        "command": "clang-tidy temp/code_files/temp_code_d5c508e3-b57e-4f7a-abb2-bc1d9f1d76bc.cpp --checks=*,-clang-diagnostic*-warning -- -Werror",
+        "errors": [],
+        "warnings": [],
+        "return_code": 0
+    },
     "valgrind": {
         "memory_issues": {
             "uninitialized_value_errors": [],
             "invalid_read_errors": [],
             "invalid_write_errors": [],
-            "definitely_lost": [
-                "==5887==    definitely lost: 0 bytes in 0 blocks"
-            ],
-            "indirectly_lost": [
-                "==5887==    indirectly lost: 0 bytes in 0 blocks"
-            ],
-            "possibly_lost": [
-                "==5887==      possibly lost: 0 bytes in 0 blocks"
-            ],
-            "still_reachable": [
-                "==5887==    still reachable: 654,994 bytes in 458 blocks"
-            ]
+            "definitely_lost": [],
+            "indirectly_lost": [],
+            "possibly_lost": [],
+            "still_reachable": []
         },
         "error_count": {
             "uninitialized_value_errors": 0,
             "invalid_read_errors": 0,
             "invalid_write_errors": 0,
-            "definitely_lost": 1,
-            "indirectly_lost": 1,
-            "possibly_lost": 1,
-            "still_reachable": 1
+            "definitely_lost": 0,
+            "indirectly_lost": 0,
+            "possibly_lost": 0,
+            "still_reachable": 0
         }
     },
     "dafny": {
-        "stdout": "temp/code_files/temp_code_36cd917a-ae2b-4ba9-bcff-dd211d3a7e91.dfy(1,0): Error: this symbol not expected in Dafny\n  |\n1 | if input_list == [] {\n  | ^\n\ntemp/code_files/temp_code_36cd917a-ae2b-4ba9-bcff-dd211d3a7e91.dfy(1,0): Warning: File contains no code\n  |\n1 | if input_list == [] {\n  | ^\n\n1 parse errors detected in temp_code_36cd917a-ae2b-4ba9-bcff-dd211d3a7e91.dfy",
-        "stderr": "",
-        "verification_status": "failure"
+        "verification_status": "no code provided"
     },
     "evaluation_score": {
-        "stsatic_analysis_score": 8.333333333333334,
+        "stsatic_analysis_score": 0,
         "dynamic_analysis_score": 10,
         "formal_veriofication_score": 0,
-        "rankme_score": 9.370035338688933,
-        "final_score": 7.270336867202227
+        "rankme_score": 7.578429445461153,
+        "final_score": 3.7578429445461152
     }
 }

@@ -48,7 +48,7 @@ def compile_program(file_path):
     subprocess.run(compile_cmd, check=True)
     return output_file
 
-def run_valgrind_for_java(file_path):
+def run_valgrind_for_java(file_path, lib_paths=None):
     # Ensure the file has a .java extension
     if not file_path.endswith('.java'):
         print(f"Error: The file {file_path} is not a Java file.")
@@ -65,10 +65,24 @@ def run_valgrind_for_java(file_path):
         new_file_path = os.path.join(os.path.dirname(file_path), f"{class_name}.java")
         os.rename(file_path, new_file_path)
         file_path = new_file_path
+    
+    # Prepend import statement for java.util.*
+    code = "import java.util.*;\n" + code
+    
+    # Write the modified code back to the file
+    with open(file_path, 'w') as f:
+        f.write(code)
 
     # Compile the Java file
     try:
-        subprocess.run(['javac', file_path], check=True)
+        command = ['javac', file_path]
+        if lib_paths:
+            classpath = ':'.join(lib_paths)  # For Linux/Mac
+            # For Windows, replace ':' with ';' in the classpath
+            if os.name == 'nt':
+                classpath = ';'.join(lib_paths)
+            command = ['javac', '-cp', classpath, file_path]
+        subprocess.run(command, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Compilation failed: {e}")
         return None
@@ -81,6 +95,7 @@ def run_valgrind_for_java(file_path):
     except subprocess.CalledProcessError as e:
         print(f"Valgrind execution failed: {e}")
         return None
+    
     output_json = process_valgrind_output(result)
     
     print("Valgrind analysis completed successfully.")
@@ -99,24 +114,24 @@ def run_valgrind_for_interpreter(file_path, interpreter):
 def process_valgrind_output(result):
     output = result.stderr
     memory_issues = {
-        "uninitialized_value_errors": [],
-        "invalid_read_errors": [],
-        "invalid_write_errors": [],
-        "definitely_lost": [],
-        "indirectly_lost": [],
-        "possibly_lost": [],
-        "still_reachable": []
+        "uninitialized_value_errors": set(),
+        "invalid_read_errors": set(),
+        "invalid_write_errors": set(),
+        "definitely_lost": set(),
+        "indirectly_lost": set(),
+        "possibly_lost": set(),
+        "still_reachable": set()
     }
     stderr = output.splitlines()
 
     in_leak_summary = False
     for line in stderr:
         if 'Use of uninitialised value' in line:
-            memory_issues["uninitialized_value_errors"].append(line.strip())
+            memory_issues["uninitialized_value_errors"].add(line.strip())
         elif 'Invalid read of size' in line:
-            memory_issues["invalid_read_errors"].append(line.strip())
+            memory_issues["invalid_read_errors"].add(line.strip())
         elif 'Invalid write of size' in line:
-            memory_issues["invalid_write_errors"].append(line.strip())
+            memory_issues["invalid_write_errors"].add(line.strip())
 
         if 'LEAK SUMMARY:' in line:
             in_leak_summary = True
@@ -124,18 +139,19 @@ def process_valgrind_output(result):
 
         if in_leak_summary:
             if 'definitely lost:' in line:
-                memory_issues["definitely_lost"].append(line.strip())
+                memory_issues["definitely_lost"].add(line.strip())
             elif 'indirectly lost:' in line:
-                memory_issues["indirectly_lost"].append(line.strip())
+                memory_issues["indirectly_lost"].add(line.strip())
             elif 'possibly lost:' in line:
-                memory_issues["possibly_lost"].append(line.strip())
+                memory_issues["possibly_lost"].add(line.strip())
             elif 'still reachable:' in line:
-                memory_issues["still_reachable"].append(line.strip())
+                memory_issues["still_reachable"].add(line.strip())
             elif 'suppressed:' in line:
                 in_leak_summary = False
 
+    # Convert sets back to lists and count errors
     result = {
-        "memory_issues": memory_issues,
+        "memory_issues": {k: list(v) for k, v in memory_issues.items()},
         "error_count": {k: len(v) for k, v in memory_issues.items()}
     }
     return result
