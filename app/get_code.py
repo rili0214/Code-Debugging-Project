@@ -10,12 +10,11 @@ def extract_and_select_best_code_block(text):
 
     # Keywords indicating the preferred code block
     keywords = [
-        "the correct code is",
-        "the revised function is as below",
-        "updated code",
-        "optimized function",
-        "refactored code",
-        # "refactored code" appears twice, remove the duplicate
+        "correct",
+        "revised",
+        "updated",
+        "optimized",
+        "refactored",
     ]
 
     # Extract code blocks surrounded by triple backticks
@@ -25,18 +24,18 @@ def extract_and_select_best_code_block(text):
     # If no backtick-enclosed blocks found, fallback to plain detection
     if not code_blocks:
         plain_code_regex = r"""
-            (?:(?:^|\n)[ \t]*)              # Line start or newline, optionally indented
-            (?:def\s+\w+\s*\([^)]*\):\s*     # Match Python function definition
-            |class\s+\w+\s*                # Match class definition
-            |for\s+\w+\s+in\s+.*?:\s*       # Match 'for' loops
-            |while\s+.*?:\s*               # Match 'while' loops
-            |if\s+.*?:\s*                  # Match 'if' statements
-            |try\s*:\s*                    # Match 'try' blocks
-            |except\s+.*?:\s*              # Match 'except' blocks
-            |finally\s*:\s*                # Match 'finally' blocks
-            |with\s+.*?:\s*                # Match 'with' statements
-            |return\s+.*?(?:\n|$))         # Match 'return' statements
-            (?:\s*.*(?:\n|$))*             # Match the rest of the block
+            (?:(?:^|\n)[ \t]*)                  # Line start or newline, optionally indented
+            (?:def\s+\w+\s*\([^)]*\):\s*        # Match Python function definition
+            |class\s+\w+\s*                     # Match class definition
+            |for\s+\w+\s+in\s+.*?:\s*           # Match 'for' loops
+            |while\s+.*?:\s*                    # Match 'while' loops
+            |if\s+.*?:\s*                       # Match 'if' statements
+            |try\s*:\s*                         # Match 'try' blocks
+            |except\s+.*?:\s*                   # Match 'except' blocks
+            |finally\s*:\s*                     # Match 'finally' blocks
+            |with\s+.*?:\s*                     # Match 'with' statements
+            |return\s+.*?(?:\n|$))              # Match 'return' statements
+            (?:\s*.*(?:\n|$))*                  # Match the rest of the block
         """
         code_blocks = re.findall(plain_code_regex, text, re.VERBOSE | re.DOTALL)
 

@@ -68,23 +68,30 @@ def safe_remove(file_path):
     try:
         if os.path.exists(file_path):
             os.remove(file_path)
+            print(f"Removed file: {file_path}")
     except Exception as e:
-        log_error(f"Failed to remove file {file_path}: {e}")
+        print(f"Failed to remove file {file_path}: {e}")
+
+def cleanup_except_selected(directory, selected_files):
+    """
+    Remove all files in the directory except the selected ones.
+    
+    Args:
+        directory (str): The directory to clean up.
+        selected_files (list): List of file names to keep.
+    """
+    try:
+        for file in glob.glob(os.path.join(directory, "*")):
+            if os.path.basename(file) not in selected_files:
+                safe_remove(file)
+    except Exception as e:
+        print(f"Error during cleanup: {e}")       
 
 def log_info(message):
     logger.info(message)
 
 def log_error(message):
     logger.error(message)
-
-def cleanup_java_temp_files(directory):
-    # Remove all .java and .class files in the specified directory
-    for temp_file in glob.glob(os.path.join(directory, "*.java")) + glob.glob(os.path.join(directory, "*.class")):
-        try:
-            os.remove(temp_file)
-            print(f"Removed temporary file: {temp_file}")
-        except OSError as e:
-            print(f"Error removing file {temp_file}: {e}")
 
 def calculate_scores(data, mode):
     static_score, valgrind_score, dafny_score, rankme_score = 0, 0, 0, 0
@@ -115,12 +122,28 @@ def calculate_scores(data, mode):
             m["metric"]: float(m["value"]) if m["value"].replace('.', '', 1).isdigit() else 0 
             for m in data["sonarqube"]["measures"]
         }
-        bugs_score = 10 if sonarqube_measures["bugs"] == 0 else 0
-        vulnerabilities_score = 10 if sonarqube_measures["vulnerabilities"] == 0 else 0
-        complexity_score = max(0, 10 - sonarqube_measures["complexity"])
-        coverage_score = max(0, 10 * sonarqube_measures["line_coverage"] / 100)
-        duplicated_score = 10 if sonarqube_measures["duplicated_lines_density"] == 0 else 0
-        static_score = (bugs_score + vulnerabilities_score + complexity_score + coverage_score + duplicated_score) / 5
+
+        if "bugs" in sonarqube_measures:
+            bugs_score = 10 if sonarqube_measures["bugs"] == 0 else 0
+            static_score += bugs_score
+
+        if "vulnerabilities" in sonarqube_measures:
+            vulnerabilities_score = 10 if sonarqube_measures["vulnerabilities"] == 0 else 0
+            static_score += vulnerabilities_score
+
+        if "complexity" in sonarqube_measures:
+            complexity_score = max(0, 10 - sonarqube_measures.get("complexity", 0))
+            static_score += complexity_score
+
+        if "line_coverage" in sonarqube_measures:
+            coverage_score = max(0, 10 * sonarqube_measures["line_coverage"] / 100)
+            static_score += coverage_score
+
+        if "duplicated_lines_density" in sonarqube_measures:
+            duplicated_score = 10 if sonarqube_measures["duplicated_lines_density"] == 0 else 0
+            static_score += duplicated_score
+
+        static_score /= 5
 
     if mode == "mode_2":
         # Valgrind Score
