@@ -168,7 +168,7 @@ def calculate_scores(data, mode):
         return {
             "stsatic_analysis_score": static_score,
             "dynamic_analysis_score": valgrind_score,
-            "formal_veriofication_score": dafny_score,
+            "formal_verification_score": dafny_score,
             "rankme_score": rankme_score,
             "final_score": final_score
         }
