@@ -1,4 +1,3 @@
-# curl -X GET 'http://localhost:9000/api/projects/search' -u 'sqa_d0d047345f91bda26804ee916c552c408150acb0'
 """
     For other langs code, like Java, Javascript, PHP .etc. It generates a .json file for later use.
 """
@@ -11,10 +10,10 @@ import os
 from requests.auth import HTTPBasicAuth
 
 # SonarQube configuration for testing; replace with your actual credentials
-SONARQUBE_URL = 'http://localhost:9000'
-SONAR_PROJECT_KEY = 'static-debugging'
-USERNAME = 'admin'
-PASSWORD = 'Qwer1234!!!!'
+SONARQUBE_URL = ''
+SONAR_PROJECT_KEY = ''
+USERNAME = ''
+PASSWORD = ''
 
 def run_sonar_scanner():
     """Runs the SonarQube scanner and handles errors and outputs."""
@@ -24,8 +23,8 @@ def run_sonar_scanner():
         sys.exit(1)
 
     # Path configurations; replace with your paths
-    sonar_scanner_path = '/mnt/c/Users/taox0/OneDrive/Documents/LLaMa/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner'
-    project_dir = '/mnt/c/Users/taox0/OneDrive/Documents/GitHub/Code-Debugging-Project/temp/code_files'
+    sonar_scanner_path = 'path to sonar-scanner'
+    project_dir = 'path to code_files'
 
     # Check if paths are correct
     if not os.path.isfile(sonar_scanner_path):
@@ -119,12 +118,8 @@ def save_report(report, filename):
         print(f"Unexpected error while saving report: {e}")
 
 if __name__ == "__main__":
-    # Run the SonarQube scanner
     if run_sonar_scanner():
-        # Fetch the detailed SonarQube analysis report
         report = fetch_detailed_report(SONAR_PROJECT_KEY, USERNAME, PASSWORD)
-
-        # Save the report if fetched successfully
         if report:
             save_report(report, 'sonarqube_report.json')
         else:

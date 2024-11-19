@@ -10,7 +10,7 @@ def run_dafny_code(file_path):
         return {"error": "No file path provided for Dafny code analysis"}
     
     result = subprocess.run(
-        ["/home/xym410102/dafny/Scripts/dafny", "verify", file_path], 
+        ["path to dafny", "verify", file_path], 
         capture_output=True, 
         text=True
     )

@@ -98,7 +98,6 @@ def analyze_code():
 
         results["evaluation_score"] = calculate_scores(results, mode)
 
-        # Write results to file safely
         with open(RESULTS_FILE, "w") as file:
             json.dump(results, file, indent=4)
 
@@ -106,12 +105,11 @@ def analyze_code():
         return jsonify(results)
 
     except Exception as e:
-        # Log detailed error and return error response
         error_details = traceback.format_exc()
         log_error(f"Error in code analysis: {error_details}")
         return jsonify({"error": "Internal server error"}), 500
 
     finally:
-        # Clean up temp files to avoid resource leaks
+        # Clean up temp files
         selected_files = ["sonar-project.properties"]
         cleanup_except_selected(TEMP_DIR, selected_files)

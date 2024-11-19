@@ -62,24 +62,16 @@ def run_pystatic_analysis(file_path):
     """
     results = []
 
-    # Check if file exists
     if not os.path.isfile(file_path):
         print(f"File '{file_path}' does not exist.")
         return
-
-    # Run each static analysis tool
+    
     results.append(run_mypy(file_path))
     results.append(run_pylint(file_path))
     results.append(run_bandit(file_path))
 
-    # Save the aggregated results to a JSON file
     #save_analysis_results(results, analysis_output_path)
     return results
 
 if __name__ == "__main__":
-    # Replace these with your actual file paths
-    file_path = "path/to/your/file.py"
-    analysis_output_path = "path/to/analysis_results.json"
-    
-    # Run static analysis and save results
-    run_pystatic_analysis(file_path, analysis_output_path)
+    run_pystatic_analysis()

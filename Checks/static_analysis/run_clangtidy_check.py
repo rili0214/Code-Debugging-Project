@@ -3,7 +3,6 @@ For C & C++ code. It generates a .json file for later use.
 """
 import subprocess
 import os
-import json
 import re
 import sys
 
@@ -57,7 +56,7 @@ if __name__ == "__main__":
 
     cpp_file_path = sys.argv[1]
     output_file = sys.argv[2]
-    #project_dir = '/mnt/c/Users/taox0/OneDrive/Documents/LLaMa/Test_example/example.cpp'
+    #project_dir = ''
     #output_file = 'clangtidy_report.json'
     run_clang_tidy(cpp_file_path, output_file)
     #run_clang_tidy(project_dir, output_file)

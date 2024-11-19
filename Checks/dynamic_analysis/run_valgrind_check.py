@@ -88,8 +88,7 @@ def run_valgrind_for_java(file_path, lib_paths=None):
     try:
         command = ['javac', file_path]
         if lib_paths:
-            classpath = ':'.join(lib_paths)  # For Linux/Mac
-            # For Windows, replace ':' with ';' in the classpath
+            classpath = ':'.join(lib_paths) 
             if os.name == 'nt':
                 classpath = ';'.join(lib_paths)
             command = ['javac', '-cp', classpath, file_path]
@@ -111,7 +110,6 @@ def run_valgrind_for_java(file_path, lib_paths=None):
     
     print("Valgrind analysis completed successfully.")
     return output_json
-
 
 def run_valgrind_for_interpreter(file_path, interpreter):
     #print(f"Running Valgrind on {interpreter} for {file_path}")

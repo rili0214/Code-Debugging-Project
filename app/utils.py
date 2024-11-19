@@ -2,7 +2,6 @@ import os
 import uuid
 import glob
 import logging
-import json
 from Checks.rankme.rankme import compute_rankme_score, preprocess_text
 
 TEMP_DIR = "temp/code_files"
@@ -14,7 +13,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
     
 def extract_code_from_input(data):
-    """Extract code and language information from the API input."""
+    """Extract code and language information from the API input.
+    
+    Args:
+        data (dict): The input data from the API.
+    """
     mode = data.get("mode")
     model = data.get("model")
     output = data.get("generated_code")
@@ -23,7 +26,12 @@ def extract_code_from_input(data):
     return mode, model, output, dafny_text, language
 
 def save_code_to_temp(code, language):
-    """Save code to a temporary file based on the provided language."""
+    """Save code to a temporary file based on the provided language.
+    
+    Args:
+        code (str): The code to save.
+        language (str): The language of the code.    
+    """
     # Mapping of languages to file extensions
     language = language.lower()
     lang_to_ext = {
@@ -54,7 +62,7 @@ def save_code_to_temp(code, language):
         "assembly": "asm"
     }
     
-    # Get extension from mapping, default to lowercase of language if not mapped
+    # Get extension from mapping
     ext = lang_to_ext.get(language.lower(), language.lower())
     
     filename = f"{TEMP_DIR}/temp_code_{uuid.uuid4()}.{ext}"
@@ -64,7 +72,11 @@ def save_code_to_temp(code, language):
 
 
 def safe_remove(file_path):
-    """Safely remove a file if it exists."""
+    """Safely remove a file if it exists.
+    
+    Args:
+        file_path (str): The path to the file to remove.
+    """
     try:
         if os.path.exists(file_path):
             os.remove(file_path)
@@ -88,13 +100,31 @@ def cleanup_except_selected(directory, selected_files):
         print(f"Error during cleanup: {e}")       
 
 def log_info(message):
+    """Log an information message.
+    
+    Args:
+        message (str): The message to log.
+    """
     logger.info(message)
 
 def log_error(message):
+    """Log an error message.
+    
+    Args:
+        message (str): The message to log.
+    """
     logger.error(message)
 
 def calculate_scores(data, mode):
+    """
+    Calculate scores based on the provided data and mode.
+    
+    Args:
+        data (dict): The data containing analysis results.
+        mode (str): The mode of the application.
+    """
     static_score, valgrind_score, dafny_score, rankme_score = 0, 0, 0, 0
+    
     # Python Static Analysis Scores
     if "python static analysis" in data:
         mypy_score = 10 if "Success" in data["python static analysis"][0]["output"] else 0
