@@ -1,127 +1,16 @@
 {
-    "model": "llama",
-    "generated_code": "public class ListFlattener {\n    public static List<Integer> flattenList(Object inputList) {\n        List<Integer> result = new ArrayList<>();\n        if (inputList instanceof List) {\n            for (Object item : (List<?>) inputList) {\n                if (item instanceof List) {\n                    result.addAll(flattenList(item));\n                } else {\n                    result.add((Integer) item);\n                }\n            }\n        }\n        return result;\n    }\n    public static void main(String[] args) {\n        List<List<Integer>> nestedList = Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4), Arrays.asList(5));\n        System.out.println(flattenList(nestedList));\n    }\n}",
-    "sonarqube": {
-        "components": [
-            {
-                "key": "static-debugging",
-                "name": "Static Analysis Sonarqube",
-                "qualifier": "TRK",
-                "project": "static-debugging"
-            }
-        ],
-        "measures": [
-            {
-                "metric": "duplicated_blocks",
-                "value": "0",
-                "bestValue": true
-            },
-            {
-                "metric": "code_smells",
-                "value": "1",
-                "bestValue": false
-            },
-            {
-                "metric": "files",
-                "value": "2"
-            },
-            {
-                "metric": "statements",
-                "value": "0"
-            },
-            {
-                "metric": "reliability_rating",
-                "value": "1.0",
-                "bestValue": true
-            },
-            {
-                "metric": "functions",
-                "value": "0"
-            },
-            {
-                "metric": "vulnerabilities",
-                "value": "1",
-                "bestValue": false
-            },
-            {
-                "metric": "duplicated_lines_density",
-                "value": "0.0",
-                "bestValue": true
-            },
-            {
-                "metric": "ncloc",
-                "value": "0"
-            },
-            {
-                "metric": "security_rating",
-                "value": "5.0",
-                "bestValue": false
-            },
-            {
-                "metric": "classes",
-                "value": "0"
-            },
-            {
-                "metric": "alert_status",
-                "value": "ERROR"
-            },
-            {
-                "metric": "bugs",
-                "value": "0",
-                "bestValue": true
-            },
-            {
-                "metric": "comment_lines",
-                "value": "0"
-            },
-            {
-                "metric": "complexity",
-                "value": "0"
-            }
-        ]
-    },
-    "valgrind": {
-        "memory_issues": {
-            "uninitialized_value_errors": [],
-            "invalid_read_errors": [
-                "==12087== Invalid read of size 8"
-            ],
-            "invalid_write_errors": [
-                "==12087== Invalid write of size 4"
-            ],
-            "definitely_lost": [
-                "==12087==    definitely lost: 626 bytes in 7 blocks"
-            ],
-            "indirectly_lost": [
-                "==12087==    indirectly lost: 3,001 bytes in 13 blocks"
-            ],
-            "possibly_lost": [
-                "==12087==      possibly lost: 194,150 bytes in 79 blocks"
-            ],
-            "still_reachable": [
-                "==12087==    still reachable: 51,742,265 bytes in 4,869 blocks"
-            ]
-        },
-        "error_count": {
-            "uninitialized_value_errors": 0,
-            "invalid_read_errors": 1,
-            "invalid_write_errors": 1,
-            "definitely_lost": 1,
-            "indirectly_lost": 1,
-            "possibly_lost": 1,
-            "still_reachable": 1
-        }
-    },
-    "dafny": {
-        "stdout": "temp/code_files/temp_code_786f6035-1ce7-49f7-80be-3b3e9ca1f4a6.dfy(1,0): Error: this symbol not expected in Dafny\n  |\n1 | if input_list == [] {\n  | ^\n\ntemp/code_files/temp_code_786f6035-1ce7-49f7-80be-3b3e9ca1f4a6.dfy(1,0): Warning: File contains no code\n  |\n1 | if input_list == [] {\n  | ^\n\n1 parse errors detected in temp_code_786f6035-1ce7-49f7-80be-3b3e9ca1f4a6.dfy",
-        "stderr": "",
-        "verification_status": "failure"
+    "model": "qwen",
+    "generated_code": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}",
+    "clang_tidy": {
+        "file": "temp/code_files/temp_code_6ad00207-c456-4ffa-a7b6-ea1ae4c393ca.cpp",
+        "status": "success",
+        "command": "clang-tidy temp/code_files/temp_code_6ad00207-c456-4ffa-a7b6-ea1ae4c393ca.cpp --checks=*,-clang-diagnostic*-warning -- -Werror",
+        "errors": [],
+        "warnings": [],
+        "return_code": 0
     },
     "evaluation_score": {
-        "stsatic_analysis_score": 6.0,
-        "dynamic_analysis_score": 10,
-        "formal_veriofication_score": 0,
-        "rankme_score": 11.824203054098712,
-        "final_score": 6.5824203054098716
+        "stsatic_analysis": 0,
+        "final_score": 0
     }
 }

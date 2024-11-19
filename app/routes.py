@@ -1,9 +1,8 @@
 import os
 import json
-import uuid
 import traceback
 from flask import Blueprint, request, jsonify
-from app.utils import extract_code_from_input, save_code_to_temp, safe_remove, log_info, log_error, cleanup_except_selected, calculate_scores
+from app.utils import extract_code_from_input, save_code_to_temp, log_info, log_error, cleanup_except_selected, calculate_scores
 from Checks.static_analysis.run_sonarqube_check import run_sonar_scanner, fetch_detailed_report, SONAR_PROJECT_KEY, USERNAME, PASSWORD
 from Checks.static_analysis.run_clangtidy_check import run_clang_tidy
 from Checks.static_analysis.run_py_check import run_pystatic_analysis

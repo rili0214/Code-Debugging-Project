@@ -21,15 +21,26 @@ def run_valgrind_check(file_path):
         raise ValueError(f"Unsupported file extension: {ext}")
 
 def run_valgrind_for_compiled(file_path):
-    compiled_program = compile_program(file_path)
-    #print(f"Running Valgrind on {compiled_program}")
-    command = ['valgrind', '--leak-check=full', './' + compiled_program]
-    result = subprocess.run(command, capture_output=True, text=True)
-    output_json = process_valgrind_output(result)
-    #save_json_output(output_json, file_path, 'valgrind_report.json')
-    print("Valgrind analysis completed successfully.")
-    return output_json
+    try:
+        compiled_program = compile_program(file_path)
+    except subprocess.CalledProcessError as e:
+        return {
+            "status": "failure",
+            "error": f"Compilation failed: {e.stderr.strip() if e.stderr else 'Unknown error'}"
+        }
 
+    command = ['valgrind', '--leak-check=full', './' + compiled_program]
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        output_json = process_valgrind_output(result)
+        print("Valgrind analysis completed successfully.")
+        return output_json
+    except subprocess.CalledProcessError as e:
+        return {
+            "status": "failure",
+            "error": f"Valgrind failed: {e.stderr.strip() if e.stderr else e.stdout.strip()}"
+        }
+    
 def compile_program(file_path):
     output_file = 'a.out' if platform.system() != 'Windows' else 'a.exe'
     if file_path.endswith('.cpp'):
@@ -45,7 +56,7 @@ def compile_program(file_path):
         raise ValueError(f"Unsupported language for compilation: {file_path}")
     
     #print(f"Compiling {file_path}")
-    subprocess.run(compile_cmd, check=True)
+    subprocess.run(compile_cmd, check=True, capture_output=True, text=True)
     return output_file
 
 def run_valgrind_for_java(file_path, lib_paths=None):

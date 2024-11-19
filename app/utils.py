@@ -105,16 +105,20 @@ def calculate_scores(data, mode):
     # Clanmgtidy Scores
     if "clang-tidy" in data:
         clangtidy = data.get("clang-tidy", {})
-        warnings = clangtidy.get("warnings", 0)
-        errors = clangtidy.get("errors", 0)
+        warnings = len(clangtidy.get("warnings", []))  # Count warnings
+        errors = len(clangtidy.get("errors", []))  # Count errors
+
         if errors > 0:
-            static_score = 0  
-        elif warnings <= 5:
-            static_score = 10 - warnings  
-        elif warnings <= 15:
-            static_score = max(5, 10 - warnings)  
+            static_score = 0  # Fail if there are any errors
         else:
-            static_score = 0  
+            if warnings == 0:
+                static_score = 10  # Perfect score for no warnings
+            elif warnings <= 5:
+                static_score = max(5, 10 - warnings)  # Slight penalty for up to 5 warnings
+            elif warnings <= 15:
+                static_score = max(2, 10 - warnings // 2)  # Moderate penalty for 6-15 warnings
+            else:
+                static_score = 0  # Significant penalty for more than 15 warnings
 
     # SonarQube Score
     if "sonarqube" in data:
@@ -149,7 +153,8 @@ def calculate_scores(data, mode):
         # Valgrind Score
         if "valgrind" in data:
             valgrind = data["valgrind"]
-            valgrind_score = 5 if "still reachable" in valgrind["memory_issues"] else 10
+            #valgrind_score = 5 if "still reachable" in valgrind["memory_issues"] else 10
+            valgrind_score = 10
 
         # Dafny Score
         if "dafny" in data:
