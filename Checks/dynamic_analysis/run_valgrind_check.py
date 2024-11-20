@@ -1,3 +1,12 @@
+#############################################################################################################################
+# Program: Checks/dynamic_analysis/run_valgrind_check.py                                                                    #                             
+# Author: Yuming Xie                                                                                                        #
+# Date: 11/20/2024                                                                                                          #
+# Version: 1.0.1                                                                                                            #
+# License: [MIT License]                                                                                                    #
+# Description: This program contains the Valgrind Checker code for running Valgrind on different file types.                #                                                                                                                 
+#############################################################################################################################
+
 import subprocess
 import os
 import sys
@@ -5,22 +14,52 @@ import platform
 import json
 import re
 from datetime import datetime
+from logs import setup_logger
+
+# Set up logger
+logger = setup_logger()
 
 def run_valgrind_check(file_path):
+    """
+    Run Valgrind on the given file.
+
+    params:
+        file_path (str): The path to the file to run Valgrind on.
+
+    returns:
+        output_json (dict): A dictionary containing the Valgrind output.
+
+    raises:
+        ValueError: If the file extension is not supported.
+    
+    """
     _, ext = os.path.splitext(file_path)
     
-    if ext in ['.c', '.cpp', '.f', '.ada', '.asm']:
+    if ext in ['.c', '.cpp', '.f', '.ada', '.asm']:                     # C, C++, Fortran, Ada, Assembly
         return run_valgrind_for_compiled(file_path)
-    elif ext == '.java':
+    elif ext == '.java':                                                # Java
         return run_valgrind_for_java(file_path)
-    elif ext == '.py':
+    elif ext == '.py':                                                  # Python
         return run_valgrind_for_interpreter(file_path, 'python3')
-    elif ext == '.pl':
+    elif ext == '.pl':                                                  # Perl
         return run_valgrind_for_interpreter(file_path, 'perl')
-    else:
+    else:   
         raise ValueError(f"Unsupported file extension: {ext}")
 
 def run_valgrind_for_compiled(file_path):
+    """
+    Run Valgrind on a compiled program.
+
+    params:
+        file_path (str): The path to the compiled program to run Valgrind on.
+
+    returns:
+        output_json (dict): A dictionary containing the Valgrind output.
+
+    exceptions:
+        subprocess.CalledProcessError: If the compilation or Valgrind command fails.
+    
+    """
     try:
         compiled_program = compile_program(file_path)
     except subprocess.CalledProcessError as e:
@@ -30,10 +69,11 @@ def run_valgrind_for_compiled(file_path):
         }
 
     command = ['valgrind', '--leak-check=full', './' + compiled_program]
+
     try:
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         output_json = process_valgrind_output(result)
-        print("Valgrind analysis completed successfully.")
+        logger.info("Valgrind analysis completed successfully.")
         return output_json
     except subprocess.CalledProcessError as e:
         return {
@@ -42,6 +82,19 @@ def run_valgrind_for_compiled(file_path):
         }
     
 def compile_program(file_path):
+    """
+    Compile a program.
+
+    params:
+        file_path (str): The path to the program to compile.
+
+    returns:
+        output_file (str): The name of the compiled program.
+
+    raises:
+        ValueError: If the file extension is not supported.
+    
+    """
     output_file = 'a.out' if platform.system() != 'Windows' else 'a.exe'
     if file_path.endswith('.cpp'):
         compile_cmd = ['g++', file_path, '-o', output_file]
@@ -55,14 +108,23 @@ def compile_program(file_path):
     else:
         raise ValueError(f"Unsupported language for compilation: {file_path}")
     
-    #print(f"Compiling {file_path}")
     subprocess.run(compile_cmd, check=True, capture_output=True, text=True)
     return output_file
 
 def run_valgrind_for_java(file_path, lib_paths=None):
+    """
+    Run Valgrind on a Java program.
+
+    params:
+        file_path (str): The path to the Java program to run Valgrind on.
+        lib_paths (list): A list of library paths to include in the classpath.
+
+    returns:
+        output_json (dict): A dictionary containing the Valgrind output.
+    """
     # Ensure the file has a .java extension
     if not file_path.endswith('.java'):
-        print(f"Error: The file {file_path} is not a Java file.")
+        logger.error(f"Error: The file {file_path} is not a Java file.")
         return None
 
     # Read the code to extract the class name if public
@@ -94,7 +156,7 @@ def run_valgrind_for_java(file_path, lib_paths=None):
             command = ['javac', '-cp', classpath, file_path]
         subprocess.run(command, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Compilation failed: {e}")
+        logger.error(f"Compilation failed: {e}")
         return None
     
     # Run Valgrind on the Java class
@@ -103,27 +165,46 @@ def run_valgrind_for_java(file_path, lib_paths=None):
     try:
         result = subprocess.run(command, capture_output=True, text=True)
     except subprocess.CalledProcessError as e:
-        print(f"Valgrind execution failed: {e}")
+        logger.error(f"Valgrind execution failed: {e}")
         return None
     
     output_json = process_valgrind_output(result)
     
-    print("Valgrind analysis completed successfully.")
+    logger.info("Valgrind analysis completed successfully.")
     return output_json
 
 def run_valgrind_for_interpreter(file_path, interpreter):
-    #print(f"Running Valgrind on {interpreter} for {file_path}")
+    """
+    Run Valgrind on a Python or Perl program.
+
+    params:
+        file_path (str): The path to the Python or Perl program to run Valgrind on.
+        interpreter (str): The interpreter to use (e.g., 'python3', 'perl').
+
+    returns:
+        output_json (dict): A dictionary containing the Valgrind output.
+    """
     command = ['valgrind', '--leak-check=full', interpreter, file_path]
     result = subprocess.run(command, capture_output=True, text=True)
     output_json = process_valgrind_output(result)
-    #save_json_output(output_json, file_path, 'valgrind_report.json')
-    print("Valgrind analysis completed successfully.")
+    logger.info("Valgrind analysis completed successfully.")
     return output_json
 
 def process_valgrind_output(result):
+    """
+    Process the Valgrind output and return a dictionary of memory issues.
+
+    params:
+        result (subprocess.CompletedProcess): The result of the Valgrind command.
+
+    returns:
+        memory_issues (dict): A dictionary containing the memory issues.
+
+    exceptions:
+        subprocess.CalledProcessError: If the Valgrind command fails.
+    """
     output = result.stderr
     memory_issues = {
-        "status": "success",
         "uninitialized_value_errors": set(),
         "invalid_read_errors": set(),
         "invalid_write_errors": set(),
@@ -162,11 +243,23 @@ def process_valgrind_output(result):
     # Convert sets back to lists and count errors
     result = {
         "memory_issues": {k: list(v) for k, v in memory_issues.items()},
-        "error_count": {k: len(v) for k, v in memory_issues.items()}
+        "error_count": {k: len(v) for k, v in memory_issues.items()},
+        "status": "success"
     }
     return result
 
 def save_json_output(output_json, file_path, filename):
+    """
+    Save the Valgrind output to a JSON file.
+    
+    params:
+        output_json (dict): A dictionary containing the Valgrind output.
+        file_path (str): The path to the file to save the output to.
+        filename (str): The name of the file to save the output to.
+    
+    effects:
+        Saves the Valgrind output to a JSON file.
+    """
     result = {
         "file": os.path.basename(file_path),
         "date": datetime.now().isoformat(),

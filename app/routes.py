@@ -1,9 +1,30 @@
+#############################################################################################################################
+# Program: app/routes.py                                                                                                    #
+# Author: Yuming Xie                                                                                                        #
+# Date: 11/20/2024                                                                                                          #
+# Version: 1.0.1                                                                                                            #
+# License: [MIT License]                                                                                                    #
+# Description: This program contains the routes for the Flask app. It handles code analysis, error handling, concurrency,   #
+# and security improvements. It returns JSON responses to the client.                                                       #                                                        #    
+#############################################################################################################################
+
 import os
 import json
 import traceback
 from flask import Blueprint, request, jsonify
-from app.utils import extract_code_from_input, save_code_to_temp, log_info, log_error, cleanup_except_selected, calculate_scores
-from Checks.static_analysis.run_sonarqube_check import run_sonar_scanner, fetch_detailed_report, SONAR_PROJECT_KEY, USERNAME, PASSWORD
+from app.utils import (
+    extract_code_from_input, 
+    save_code_to_temp, 
+    log_info, 
+    log_error, 
+    cleanup_except_selected, 
+    calculate_scores)
+from Checks.static_analysis.run_sonarqube_check import (
+    run_sonar_scanner, 
+    fetch_detailed_report, 
+    SONAR_PROJECT_KEY, 
+    USERNAME, 
+    PASSWORD)
 from Checks.static_analysis.run_clangtidy_check import run_clang_tidy
 from Checks.static_analysis.run_py_check import run_pystatic_analysis
 from Checks.dynamic_analysis.run_valgrind_check import run_valgrind_check
@@ -21,14 +42,23 @@ sonarqube_lang = ["Java", "C#", "JavaScript", "TypeScript", "CloudFormation", "T
 valgrind_lang = ["C", "C++", "Fortran", "Ada", "Assembly", "Java", "Python", "Perl"]
 dafny_lang = ["C#", "Go", "Python", "Java", "JavaScript"]
 
-TEMP_DIR = "temp/code_files"
-RESULTS_FILE = "Results/combined_results.json"
-os.makedirs(TEMP_DIR, exist_ok=True)
-os.makedirs(os.path.dirname(RESULTS_FILE), exist_ok=True)
+TEMP_DIR = "temp/code_files"                                    # Directory for temporary code files
+RESULTS_FILE = "Results/combined_results.json"                  # File to store combined results
+os.makedirs(TEMP_DIR, exist_ok=True)                            # Ensure temp directory exists
+os.makedirs(os.path.dirname(RESULTS_FILE), exist_ok=True)       # Ensure results directory exists
 
+"""
+API endpoint for analyzing code with improved error handling, concurrency, and security. 
+It returns JSON responses to the client.
+
+Paras:
+    None
+
+Returns:
+    JSON response with analysis results
+"""
 @app_routes.route('/analyze', methods=['POST'])
 def analyze_code():
-    """API endpoint for analyzing code with improved error handling, concurrency, and security."""
     temp_code_file = None  
     temp_dafny_file = None
     try:
@@ -37,16 +67,16 @@ def analyze_code():
             return jsonify({"error": "Invalid JSON format"}), 400
         data = request.get_json()
 
-        print(f"Received data: {data}")
-
         # Extract and validate input
         mode, model, text, dafny_text, language = extract_code_from_input(data)
         if not text or not language:
-            print("Missing code or language")
+            log_error("Missing code or language")
             return jsonify({"error": "Output and language fields are required"}), 400
         
+        # Extract and select best code block
         code = extract_and_select_best_code_block(text)
 
+        # Check if dafny_text is None
         if dafny_text is None:
             dafny_code = ""
         else:
@@ -67,36 +97,36 @@ def analyze_code():
         results["model"] = model
         results["generated_code"] = code
         
-        # Run analyses
+        # Run analyses based on tool selection
         if run_pystatic:
-            print("Running Python static analysis...")
+            log_info("Running Python static analysis...")
             results["python static analysis"] = run_pystatic_analysis(temp_code_file)
 
         if run_clangtidy:
-            print("Running ClangTidy analysis...")
+            log_info("Running ClangTidy analysis...")
             results["clang_tidy"] = run_clang_tidy(temp_code_file)
 
         if run_sonarqube:
-            print("Running SonarQube analysis...")
+            log_info("Running SonarQube analysis...")
             if run_sonar_scanner():
                 report = fetch_detailed_report(SONAR_PROJECT_KEY, USERNAME, PASSWORD)
                 results["sonarqube"] = report
             else:
-                print("SonarQube scanner execution failed.")
+                log_info("SonarQube scanner execution failed.")
 
         if mode == "mode_2":
             if run_valgrind:
-                print("Running Valgrind analysis...")
+                log_info("Running Valgrind analysis...")
                 results["valgrind"] = run_valgrind_check(temp_code_file)
 
             if run_dafny and dafny_code:
                 temp_dafny_file = save_code_to_temp(dafny_code, "dfy")
-                print("Running Dafny analysis...")
+                log_info("Running Dafny analysis...")
                 results["dafny"] = run_dafny_code(temp_dafny_file)
             else:
                 results["dafny"] = {"verification_status": "no code provided"}
 
-        results["evaluation_score"] = calculate_scores(results, mode, language)
+        results["evaluation_score"] = calculate_scores(results, mode)
 
         with open(RESULTS_FILE, "w") as file:
             json.dump(results, file, indent=4)
@@ -105,6 +135,7 @@ def analyze_code():
         return jsonify(results)
 
     except Exception as e:
+        # Log and return error
         error_details = traceback.format_exc()
         log_error(f"Error in code analysis: {error_details}")
         return jsonify({"error": "Internal server error"}), 500

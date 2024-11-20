@@ -1,0 +1,41 @@
+2024-11-19 18:36:34,450 - INFO - RankMe package initialized.
+2024-11-19 18:36:34,698 - INFO - Dafny Checker package initialized.
+2024-11-19 18:37:30,937 - INFO - RankMe package initialized.
+2024-11-19 18:37:31,112 - INFO - Static analysis package initialized.
+2024-11-19 18:37:31,194 - INFO - Valgrind Checker package initialized.
+2024-11-19 18:37:31,231 - INFO - Dafny Checker package initialized.
+2024-11-19 18:37:31,264 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.29.42.196:5000
+2024-11-19 18:37:31,264 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-19 18:37:36,539 - INFO - Received data: {'mode': 'mode_2', 'model': 'qwen', 'generated_code': '```cpp\n#include <iostream>\nint main() { \n    std::cout << "Hello, World!";\n    return 0; \n}\n```', 'language': 'C++', 'dafny_text': ''}
+2024-11-19 18:37:36,548 - INFO - Saved code to temp/code_files/temp_code_9b4bb704-d63a-46cf-8977-d104b5474f33.cpp
+2024-11-19 18:37:36,552 - INFO - Running ClangTidy analysis...
+2024-11-19 18:37:38,771 - INFO - Clangtidy analysis completed successfully.
+2024-11-19 18:37:38,771 - INFO - Running Valgrind analysis...
+2024-11-19 18:37:39,536 - INFO - Valgrind analysis completed successfully.
+2024-11-19 18:37:39,548 - INFO - Code analysis completed successfully.
+2024-11-19 18:37:39,557 - INFO - Removed file: temp/code_files/temp_code_9b4bb704-d63a-46cf-8977-d104b5474f33.cpp
+2024-11-19 18:37:39,557 - INFO - Removed file: temp/code_files/temp_code_9b4bb704-d63a-46cf-8977-d104b5474f33.cpp
+2024-11-19 18:37:39,558 - INFO - 127.0.0.1 - - [19/Nov/2024 18:37:39] "POST /analyze HTTP/1.1" 200 -
+2024-11-19 18:37:39,570 - INFO - Received data: {'mode': 'mode_2', 'model': 'llama', 'generated_code': '```\n#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!";\n    return 0;\n}\n```', 'language': 'C++', 'dafny_text': ''}
+2024-11-19 18:37:39,576 - INFO - Saved code to temp/code_files/temp_code_f6354065-6e8d-46eb-a76d-818f617de715.cpp
+2024-11-19 18:37:39,576 - INFO - Running ClangTidy analysis...
+2024-11-19 18:37:41,482 - INFO - Clangtidy analysis completed successfully.
+2024-11-19 18:37:41,482 - INFO - Running Valgrind analysis...
+2024-11-19 18:37:42,109 - INFO - Valgrind analysis completed successfully.
+2024-11-19 18:37:42,115 - INFO - Code analysis completed successfully.
+2024-11-19 18:37:42,122 - INFO - Removed file: temp/code_files/temp_code_f6354065-6e8d-46eb-a76d-818f617de715.cpp
+2024-11-19 18:37:42,122 - INFO - Removed file: temp/code_files/temp_code_f6354065-6e8d-46eb-a76d-818f617de715.cpp
+2024-11-19 18:37:42,123 - INFO - 127.0.0.1 - - [19/Nov/2024 18:37:42] "POST /analyze HTTP/1.1" 200 -
+2024-11-19 18:37:45,523 - INFO - Received data: {'mode': 'mode_2', 'model': 'qwen', 'generated_code': '```cpp\n#include <iostream>\n\nint main() {\n    std::cout << "Hello, World!" << std::endl;\n    return 0;\n}\n```\n\nExplanation  \nBoth models (model 1 and model 2) have identical final scores and generated code. The code provided is already clean and free of errors as indicated by the static analysis, dynamic analysis, and valgrind reports. However, a minor enhancement is made by using `std::endl` instead of just `"\\n"` to ensure the output buffer is flushed, which aligns with best practices in some contexts where immediate output is necessary.', 'language': 'C++', 'dafny_text': ''}
+2024-11-19 18:37:45,529 - INFO - Saved code to temp/code_files/temp_code_59c887a0-5e0a-4a32-ad9a-5ef0bb3befc9.cpp
+2024-11-19 18:37:45,529 - INFO - Running ClangTidy analysis...
+2024-11-19 18:37:47,444 - INFO - Clangtidy analysis completed successfully.
+2024-11-19 18:37:47,444 - INFO - Running Valgrind analysis...
+2024-11-19 18:37:48,186 - INFO - Valgrind analysis completed successfully.
+2024-11-19 18:37:48,192 - INFO - Code analysis completed successfully.
+2024-11-19 18:37:48,202 - INFO - Removed file: temp/code_files/temp_code_59c887a0-5e0a-4a32-ad9a-5ef0bb3befc9.cpp
+2024-11-19 18:37:48,202 - INFO - Removed file: temp/code_files/temp_code_59c887a0-5e0a-4a32-ad9a-5ef0bb3befc9.cpp
+2024-11-19 18:37:48,203 - INFO - 127.0.0.1 - - [19/Nov/2024 18:37:48] "POST /analyze HTTP/1.1" 200 -

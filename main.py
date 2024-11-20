@@ -1,3 +1,12 @@
+#############################################################################################################################
+# Program: main.py                                                                                                          #                 
+# Author: Yuming Xie                                                                                                        #
+# Date: 11/20/2024                                                                                                          #
+# Version: 1.0.1                                                                                                            #
+# License: [MIT License]                                                                                                    #
+# Description: This program contains the main entry point for the application.                                              #                                                                                                 
+#############################################################################################################################
+
 from flask import Flask
 from app.routes import app_routes 
 

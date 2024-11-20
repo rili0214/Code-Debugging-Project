@@ -1,6 +1,13 @@
-"""
-    For other langs code, like Java, Javascript, PHP .etc. It generates a .json file for later use.
-"""
+#############################################################################################################################
+# Program: Checks/static_analysis/run_py_check.py                                                                           #                 
+# Author: Yuming Xie                                                                                                        #
+# Date: 11/20/2024                                                                                                          #
+# Version: 1.0.1                                                                                                            #
+# License: [MIT License]                                                                                                    #
+# Description: This program contains the Other languages checker code for running static analysis tools on other files,     #
+# like Java, Javascript, PHP .etc.                                                                                          #                                                                                                 
+#############################################################################################################################
+
 import platform
 import sys
 import subprocess
@@ -8,30 +15,43 @@ import requests
 import json
 import os
 from requests.auth import HTTPBasicAuth
+from logs import setup_logger
 
-# SonarQube configuration for testing; replace with your actual credentials
-SONARQUBE_URL = ''
-SONAR_PROJECT_KEY = ''
-USERNAME = ''
-PASSWORD = ''
+# Set up logger
+logger = setup_logger()
+
+SONARQUBE_URL = 'http://localhost:9000'
+SONAR_PROJECT_KEY = 'static-debugging'
+USERNAME = 'admin'
+PASSWORD = 'Qwer1234!!!!'
 
 def run_sonar_scanner():
-    """Runs the SonarQube scanner and handles errors and outputs."""
+    """
+    Runs the SonarQube scanner and handles errors and outputs.
+    
+    Returns:
+        bool: True if the analysis was successful, False otherwise.
+
+    Exceptions:
+        subprocess.CalledProcessError: If the SonarQube scanner fails.
+        FileNotFoundError: If the SonarQube scanner is not found.
+        Exception: For any other unexpected errors.
+    """
 
     if platform.system() != "Linux":
-        print("This script is intended to run on Linux.")
+        logger.error("This script is intended to run on Linux.")
         sys.exit(1)
 
     # Path configurations; replace with your paths
-    sonar_scanner_path = 'path to sonar-scanner'
-    project_dir = 'path to code_files'
+    sonar_scanner_path = '/mnt/c/Users/taox0/OneDrive/Documents/LLaMa/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner'
+    project_dir = '/mnt/c/Users/taox0/OneDrive/Documents/GitHub/Code-Debugging-Project/temp/code_files'
 
     # Check if paths are correct
     if not os.path.isfile(sonar_scanner_path):
-        print(f"Sonar scanner path '{sonar_scanner_path}' is invalid.")
+        logger.error(f"Sonar scanner path '{sonar_scanner_path}' is invalid.")
         return False
     if not os.path.isdir(project_dir):
-        print(f"Project directory '{project_dir}' is invalid.")
+        logger.error(f"Project directory '{project_dir}' is invalid.")
         return False
     
     original_dir = os.getcwd()
@@ -39,25 +59,40 @@ def run_sonar_scanner():
     os.chdir(project_dir)
 
     try:
-        #result = subprocess.run([sonar_scanner_path], check=True, text=True, capture_output=True)
         subprocess.run([sonar_scanner_path], check=True, text=True, capture_output=True)
-        print("SonarQube analysis completed successfully.")
-        #print("Output:\n", result.stdout)
+        logger.info("SonarQube analysis completed successfully.")
         return True
     except subprocess.CalledProcessError as e:
-        print("An error occurred while running SonarQube analysis.")
-        print("Error output:\n", e.stderr)
+        logger.error("An error occurred while running SonarQube analysis.")
+        logger.error("Error output:\n", e.stderr)
     except FileNotFoundError:
-        print(f"Sonar scanner not found at path '{sonar_scanner_path}'")
+        logger.error(f"Sonar scanner not found at path '{sonar_scanner_path}'")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        logger.error(f"Unexpected error: {e}")
     finally:
         os.chdir(original_dir)
 
     return False
 
 def fetch_detailed_report(project_key, username, password):
-    """Fetches the SonarQube analysis report for the given project key."""
+    """
+    Fetches the SonarQube analysis report for the given project key.
+    
+    params:
+        project_key (str): The project key to fetch the report for.
+        username (str): The username for authentication.
+        password (str): The password for authentication.
+    
+    returns:
+        report (dict): A dictionary containing the SonarQube analysis report.
+
+    exceptions:
+        requests.exceptions.HTTPError: If the request to the SonarQube server fails.
+        requests.exceptions.ConnectionError: If the connection to the SonarQube server fails.
+        requests.exceptions.Timeout: If the request to the SonarQube server times out.
+        requests.exceptions.RequestException: If the request to the SonarQube server fails.
+        json.JSONDecodeError: If the response from the SonarQube server is not valid JSON.
+    """
     
     metrics = (
         "alert_status,bugs,vulnerabilities,code_smells,coverage,ncloc,complexity,"
@@ -107,7 +142,20 @@ def fetch_detailed_report(project_key, username, password):
     return None
 
 def save_report(report, filename):
-    """Saves the SonarQube report to a JSON file."""
+    """
+    Saves the SonarQube report to a JSON file.
+    
+    params:
+        report (dict): A dictionary containing the SonarQube analysis report.
+        filename (str): The name of the file to save the report to.
+    
+    effects:
+        Saves the SonarQube report to a JSON file.
+    
+    exceptions:
+        IOError: If there is an error writing to the file.
+        Exception: If there is an unexpected error.
+    """
     try:
         with open(filename, 'w') as f:
             json.dump(report, f, indent=4)

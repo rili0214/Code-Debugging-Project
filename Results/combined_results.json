@@ -2,15 +2,14 @@
     "model": "qwen",
     "generated_code": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}",
     "clang_tidy": {
-        "file": "temp/code_files/temp_code_66e56ac8-281a-48b2-be9e-d71e7c7bca76.cpp",
+        "file": "temp/code_files/temp_code_59c887a0-5e0a-4a32-ad9a-5ef0bb3befc9.cpp",
         "status": "success",
-        "command": "clang-tidy temp/code_files/temp_code_66e56ac8-281a-48b2-be9e-d71e7c7bca76.cpp --checks=*,-clang-diagnostic*-warning -- -Werror",
+        "command": "clang-tidy temp/code_files/temp_code_59c887a0-5e0a-4a32-ad9a-5ef0bb3befc9.cpp --checks=*,-clang-diagnostic*-warning -- -Werror",
         "errors": [],
         "warnings": [],
         "return_code": 0
     },
     "valgrind": {
-        "status": "success",
         "memory_issues": {
             "uninitialized_value_errors": [],
             "invalid_read_errors": [],
@@ -28,16 +27,18 @@
             "indirectly_lost": 0,
             "possibly_lost": 0,
             "still_reachable": 0
-        }
+        },
+        "status": "success"
     },
     "dafny": {
         "verification_status": "no code provided"
     },
     "evaluation_score": {
-        "stsatic_analysis_score": 0,
+        "stsatic_analysis_score": 10,
         "dynamic_analysis_score": 10,
-        "formal_verification_score": 0,
-        "rankme_score": 2.8284271247461907,
-        "final_score": 3.282842712474619
+        "formal_verification_score": -1,
+        "rankme_score": 2.828427124746189,
+        "final_score": 9.282842712474618,
+        "Note": "-1 indicates current method is not available"
     }
 }

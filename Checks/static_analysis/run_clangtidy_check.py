@@ -1,14 +1,36 @@
-"""
-For C & C++ code. It generates a .json file for later use.
-"""
+#############################################################################################################################
+# Program: Checks/static_analysis/run_clangtidy_check.py                                                                    #                 
+# Author: Yuming Xie                                                                                                        #
+# Date: 11/20/2024                                                                                                          #
+# Version: 1.0.1                                                                                                            #
+# License: [MIT License]                                                                                                    #
+# Description: This program contains the Clangtidy Checker code for running Clangtidy on C/C++ files.                       #                                                                                                 
+#############################################################################################################################
+
 import subprocess
 import os
 import re
 import sys
+from logs import setup_logger
+
+# Set up logger
+logger = setup_logger()
 
 def run_clang_tidy(file_path):
+    """
+    Run Clangtidy on a C/C++ program.
+
+    params:
+        file_path (str): The path to the C/C++ program to run Clangtidy on.
+
+    returns:
+        output_json (dict): A dictionary containing the Clangtidy output.
+
+    exceptions:
+        subprocess.CalledProcessError: If the Clangtidy command fails.
+    """
     if not os.path.isfile(file_path):
-        print(f"Error: The file {file_path} does not exist.")
+        logger.error(f"Error: The file {file_path} does not exist.")
         return
 
     command = [
@@ -39,15 +61,12 @@ def run_clang_tidy(file_path):
                 message = match.group(1)  
                 output["errors"].append(message)
                 
-        print("Clangtidy analysis completed successfully.")
+        logger.info("Clangtidy analysis completed successfully.")
 
         return output
-        #with open(output_file, 'w') as f:
-            #json.dump(output, f, indent=4)
-        #print(f"Clangtidy report saved to {output_file}")
 
     except Exception as e:
-        print(f"An error occurred while running clang-tidy: {e}")
+        logger.error(f"An error occurred while running clang-tidy: {e}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
