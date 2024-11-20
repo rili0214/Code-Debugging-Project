@@ -72,7 +72,6 @@ def save_code_to_temp(code, language):
         file.write(code)
     return filename
 
-
 def safe_remove(file_path):
     """Safely remove a file if it exists.
     
@@ -117,7 +116,7 @@ def log_error(message):
     """
     logger.error(message)
 
-def calculate_scores(data, mode, language):
+def calculate_scores(data, mode):
     """
     Calculate scores based on the provided data and mode.
     
@@ -225,10 +224,3 @@ def calculate_scores(data, mode, language):
             "final_score": final_score,
             "Note":"-1 indicates current method is not available"
         }
-
-if __name__ == "__main__":
-    data = Path(__file__).parent.parent / 'Results' / 'combined_results.json'
-    with open(data, 'r') as f:
-        data = json.load(f)
-    scores = calculate_scores(data=data, mode="mode_2")
-    print(scores)

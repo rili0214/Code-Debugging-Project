@@ -1,5 +1,8 @@
 from app.get_code import extract_and_select_best_code_block
+from app.utils import calculate_scores
 from difflib import SequenceMatcher
+from pathlib import Path
+import json
 
 def normalize_code(code):
     """Normalize code by removing extra whitespace and ensuring consistent formatting."""
@@ -330,8 +333,18 @@ def test_extract_and_select_best_code_block():
     code_7_passed = is_code_similar(extract_and_select_best_code_block(sample_text7), expected_result7)
     code_8_passed = is_code_similar(extract_and_select_best_code_block(sample_text8), expected_result8)
     if code_1_passed and code_2_passed and code_3_passed and code_4_passed and code_5_passed and code_6_passed and code_7_passed and code_8_passed:
-        print("All tests passed!")
+        print("Code extraction and valadation tests passed!")
+
+def utility_tests():
+    data = Path(__file__).parent.parent / 'Results' / 'combined_results.json'
+    with open(data, 'r') as f:
+        data = json.load(f)
+    scores = calculate_scores(data=data, mode="mode_2")
+    assert 0 <= scores["final_score"] <= 10
+    print("Utility tests passed!")
+
 
 # Run the tests
 if __name__ == "__main__":
     test_extract_and_select_best_code_block()
+    utility_tests()

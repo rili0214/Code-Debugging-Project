@@ -1,7 +1,5 @@
 import re
 
-import re
-
 def extract_and_select_best_code_block(text):
     """
     Extracts the most relevant code block from text containing multiple code snippets and explanations.
