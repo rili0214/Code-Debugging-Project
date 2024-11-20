@@ -5,7 +5,6 @@ import logging
 from pathlib import Path
 import json
 from Checks.rankme.rankme import compute_rankme_score, preprocess_text
-from app.routes import dafny_lang
 
 TEMP_DIR = "temp/code_files"
 
@@ -213,7 +212,7 @@ def calculate_scores(data, mode, language):
         final_score = (static_score * 0.6 + dafny_score * 0.3 + rankme_score * 0.1)
     elif static_score != -1 and rankme_score != -1:
         final_score = (static_score * 0.8 + rankme_score * 0.2)
-        
+
     # Final Weighted Score
     if mode == "mode_1":
         return {"stsatic_analysis": static_score, "final_score": static_score}
