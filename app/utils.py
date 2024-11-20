@@ -2,7 +2,10 @@ import os
 import uuid
 import glob
 import logging
+from pathlib import Path
+import json
 from Checks.rankme.rankme import compute_rankme_score, preprocess_text
+from app.routes import dafny_lang
 
 TEMP_DIR = "temp/code_files"
 
@@ -115,7 +118,7 @@ def log_error(message):
     """
     logger.error(message)
 
-def calculate_scores(data, mode):
+def calculate_scores(data, mode, language):
     """
     Calculate scores based on the provided data and mode.
     
@@ -123,7 +126,7 @@ def calculate_scores(data, mode):
         data (dict): The data containing analysis results.
         mode (str): The mode of the application.
     """
-    static_score, valgrind_score, dafny_score, rankme_score = 0, 0, 0, 0
+    static_score, valgrind_score, dafny_score, rankme_score = -1, -1, -1, -1
     
     # Python Static Analysis Scores
     if "python static analysis" in data:
@@ -133,7 +136,7 @@ def calculate_scores(data, mode):
         static_score = (mypy_score + pylint_score + bandit_score) / 3
 
     # Clanmgtidy Scores
-    if "clang-tidy" in data:
+    if "clang_tidy" in data:
         clangtidy = data.get("clang-tidy", {})
         warnings = len(clangtidy.get("warnings", []))  # Count warnings
         errors = len(clangtidy.get("errors", []))  # Count errors
@@ -152,6 +155,7 @@ def calculate_scores(data, mode):
 
     # SonarQube Score
     if "sonarqube" in data:
+        count = 0
         sonarqube_measures = {
             m["metric"]: float(m["value"]) if m["value"].replace('.', '', 1).isdigit() else 0 
             for m in data["sonarqube"]["measures"]
@@ -160,31 +164,38 @@ def calculate_scores(data, mode):
         if "bugs" in sonarqube_measures:
             bugs_score = 10 if sonarqube_measures["bugs"] == 0 else 0
             static_score += bugs_score
+            count += 1
 
         if "vulnerabilities" in sonarqube_measures:
             vulnerabilities_score = 10 if sonarqube_measures["vulnerabilities"] == 0 else 0
             static_score += vulnerabilities_score
+            count += 1
 
         if "complexity" in sonarqube_measures:
             complexity_score = max(0, 10 - sonarqube_measures.get("complexity", 0))
             static_score += complexity_score
+            count += 1
 
         if "line_coverage" in sonarqube_measures:
             coverage_score = max(0, 10 * sonarqube_measures["line_coverage"] / 100)
             static_score += coverage_score
+            count += 1
 
         if "duplicated_lines_density" in sonarqube_measures:
             duplicated_score = 10 if sonarqube_measures["duplicated_lines_density"] == 0 else 0
             static_score += duplicated_score
+            count += 1
 
-        static_score /= 5
+        static_score /= count
 
     if mode == "mode_2":
         # Valgrind Score
         if "valgrind" in data:
             valgrind = data["valgrind"]
-            #valgrind_score = 5 if "still reachable" in valgrind["memory_issues"] else 10
-            valgrind_score = 10
+            if valgrind["status"] == "failure":
+                valgrind_score = 0
+            else:
+                valgrind_score = 5 if "still reachable" in valgrind["memory_issues"] else 10
 
         # Dafny Score
         if "dafny" in data:
@@ -193,18 +204,31 @@ def calculate_scores(data, mode):
         # Rankme Score
         split_texts = preprocess_text(data["generated_code"])
         rankme_score = compute_rankme_score(split_texts)
-
-    final_score = (static_score * 0.4 + valgrind_score * 0.3 + dafny_score * 0.2 + rankme_score * 0.1) if mode == "mode_2" else static_score
-    
+        
+    if static_score != -1 and valgrind_score != -1 and dafny_score != -1 and rankme_score != -1:
+        final_score = (static_score * 0.4 + valgrind_score * 0.3 + dafny_score * 0.2 + rankme_score * 0.1)
+    elif static_score != -1 and valgrind_score != -1 and dafny_score != -1:
+        final_score = (static_score * 0.4 + valgrind_score * 0.3 + dafny_score * 0.3) 
+    elif static_score != -1 and valgrind_score != -1:
+        final_score = (static_score * 0.7 + valgrind_score * 0.3) 
+    elif static_score != -1 and dafny_score != -1:
+        final_score = (static_score * 0.7 + dafny_score * 0.3)
     # Final Weighted Score
     if mode == "mode_1":
-        return {"stsatic_analysis": static_score, "final_score": final_score}
+        return {"stsatic_analysis": static_score, "final_score": static_score}
     else:
         return {
             "stsatic_analysis_score": static_score,
             "dynamic_analysis_score": valgrind_score,
             "formal_verification_score": dafny_score,
             "rankme_score": rankme_score,
-            "final_score": final_score
+            "final_score": final_score,
+            "Note":"-1 indicates current method is not available"
         }
 
+if __name__ == "__main__":
+    data = Path(__file__).parent.parent / 'Results' / 'combined_results.json'
+    with open(data, 'r') as f:
+        data = json.load(f)
+    scores = calculate_scores(data=data, mode="mode_2")
+    print(scores)

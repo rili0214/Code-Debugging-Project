@@ -26,7 +26,7 @@ def run_valgrind_for_compiled(file_path):
     except subprocess.CalledProcessError as e:
         return {
             "status": "failure",
-            "error": f"Compilation failed: {e.stderr.strip() if e.stderr else 'Unknown error'}"
+            "error": "Compilation failed!"
         }
 
     command = ['valgrind', '--leak-check=full', './' + compiled_program]
@@ -38,7 +38,7 @@ def run_valgrind_for_compiled(file_path):
     except subprocess.CalledProcessError as e:
         return {
             "status": "failure",
-            "error": f"Valgrind failed: {e.stderr.strip() if e.stderr else e.stdout.strip()}"
+            "error": "Valgrind failed!"
         }
     
 def compile_program(file_path):
@@ -123,6 +123,7 @@ def run_valgrind_for_interpreter(file_path, interpreter):
 def process_valgrind_output(result):
     output = result.stderr
     memory_issues = {
+        "status": "success",
         "uninitialized_value_errors": set(),
         "invalid_read_errors": set(),
         "invalid_write_errors": set(),

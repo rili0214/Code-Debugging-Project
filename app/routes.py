@@ -96,7 +96,7 @@ def analyze_code():
             else:
                 results["dafny"] = {"verification_status": "no code provided"}
 
-        results["evaluation_score"] = calculate_scores(results, mode)
+        results["evaluation_score"] = calculate_scores(results, mode, language)
 
         with open(RESULTS_FILE, "w") as file:
             json.dump(results, file, indent=4)

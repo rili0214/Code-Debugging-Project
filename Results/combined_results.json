@@ -10,6 +10,7 @@
         "return_code": 0
     },
     "valgrind": {
+        "status": "success",
         "memory_issues": {
             "uninitialized_value_errors": [],
             "invalid_read_errors": [],
