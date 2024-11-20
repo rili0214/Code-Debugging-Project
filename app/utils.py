@@ -207,12 +207,13 @@ def calculate_scores(data, mode, language):
         
     if static_score != -1 and valgrind_score != -1 and dafny_score != -1 and rankme_score != -1:
         final_score = (static_score * 0.4 + valgrind_score * 0.3 + dafny_score * 0.2 + rankme_score * 0.1)
-    elif static_score != -1 and valgrind_score != -1 and dafny_score != -1:
-        final_score = (static_score * 0.4 + valgrind_score * 0.3 + dafny_score * 0.3) 
-    elif static_score != -1 and valgrind_score != -1:
-        final_score = (static_score * 0.7 + valgrind_score * 0.3) 
-    elif static_score != -1 and dafny_score != -1:
-        final_score = (static_score * 0.7 + dafny_score * 0.3)
+    elif static_score != -1 and valgrind_score != -1 and rankme_score != -1:
+        final_score = (static_score * 0.6 + valgrind_score * 0.3 + rankme_score * 0.1) 
+    elif static_score != -1 and dafny_score != -1 and rankme_score != -1:
+        final_score = (static_score * 0.6 + dafny_score * 0.3 + rankme_score * 0.1)
+    elif static_score != -1 and rankme_score != -1:
+        final_score = (static_score * 0.8 + rankme_score * 0.2)
+        
     # Final Weighted Score
     if mode == "mode_1":
         return {"stsatic_analysis": static_score, "final_score": static_score}
