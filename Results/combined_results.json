@@ -1,10 +1,10 @@
 {
     "model": "qwen",
-    "generated_code": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}",
+    "generated_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}",
     "clang_tidy": {
-        "file": "temp/code_files/temp_code_59c887a0-5e0a-4a32-ad9a-5ef0bb3befc9.cpp",
+        "file": "temp/code_files/temp_code_66450a11-d9ad-4ed3-964f-5bf36a7e0c64.cpp",
         "status": "success",
-        "command": "clang-tidy temp/code_files/temp_code_59c887a0-5e0a-4a32-ad9a-5ef0bb3befc9.cpp --checks=*,-clang-diagnostic*-warning -- -Werror",
+        "command": "clang-tidy temp/code_files/temp_code_66450a11-d9ad-4ed3-964f-5bf36a7e0c64.cpp --checks=*,-clang-diagnostic*-warning -- -Werror",
         "errors": [],
         "warnings": [],
         "return_code": 0
@@ -37,7 +37,7 @@
         "stsatic_analysis_score": 10,
         "dynamic_analysis_score": 10,
         "formal_verification_score": -1,
-        "rankme_score": 2.828427124746189,
+        "rankme_score": 2.8284271247461903,
         "final_score": 9.282842712474618,
         "Note": "-1 indicates current method is not available"
     }
