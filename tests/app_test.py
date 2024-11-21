@@ -1,3 +1,12 @@
+#############################################################################################################################
+# Program: tests/app_test.py                                                                                                #
+# Author: Yuming Xie                                                                                                        #
+# Date: 11/20/2024                                                                                                          #
+# Version: 1.0.1                                                                                                            #
+# License: [MIT License]                                                                                                    #
+# Description: This program contains unit tests for the code extraction and score calculation.                              #    
+#############################################################################################################################
+
 from app.get_code import extract_and_select_best_code_block
 from app.utils import calculate_scores
 from difflib import SequenceMatcher
@@ -5,13 +14,28 @@ from pathlib import Path
 import json
 
 def normalize_code(code):
-    """Normalize code by removing extra whitespace and ensuring consistent formatting."""
+    """
+    Normalize code by removing extra whitespace and ensuring consistent formatting.
+
+    params:
+        code (str): The code to be normalized.
+
+    returns:
+        normalized_code (str): The normalized code.
+    """
     return "\n".join(line.strip() for line in code.strip().splitlines() if line.strip())
 
 def is_code_similar(code1, code2, threshold=0.99):
     """
     Check if two pieces of code are similar based on a similarity threshold.
-    Returns True if similarity exceeds the threshold, otherwise False.
+
+    params:
+        code1 (str): The first piece of code.
+        code2 (str): The second piece of code.
+        threshold (float): The similarity threshold (default is 0.99).
+
+    returns:
+        is_similar (bool): True if the codes are similar, False otherwise.
     """
     normalized_code1 = normalize_code(code1)
     normalized_code2 = normalize_code(code2)
@@ -19,6 +43,9 @@ def is_code_similar(code1, code2, threshold=0.99):
     return similarity_ratio >= threshold
 
 def test_extract_and_select_best_code_block():
+    """
+    Test the extract_and_select_best_code_block function.
+    """
     # Test cases
     sample_text1 = "```python\ndef add(a, b):\n    return a + b\n```"
     expected_result1 = "def add(a, b):\n    return a + b"
@@ -336,6 +363,9 @@ def test_extract_and_select_best_code_block():
         print("Code extraction and valadation tests passed!")
 
 def utility_tests():
+    """
+    Utility tests.
+    """
     data = Path(__file__).parent.parent / 'Results' / 'combined_results.json'
     with open(data, 'r') as f:
         data = json.load(f)
