@@ -8,8 +8,6 @@
 #############################################################################################################################
 
 import subprocess
-import json
-import sys
 from logs import setup_logger
 
 # Set up logger
@@ -29,9 +27,9 @@ def run_dafny_code(file_path):
         return {"error": "No file path provided for Dafny code analysis"}
     
     result = subprocess.run(
-        ["/home/xym410102/dafny/Scripts/dafny", "verify", file_path],
-        capture_output=True,
-        text=True
+        ["path to dafny", "verify", file_path],
+        capture_output = True,
+        text = True
     )
 
     report = {
@@ -42,17 +40,3 @@ def run_dafny_code(file_path):
 
     logger.info("Dafny verification completed successfully.")
     return report
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 run_dafny_check.py <source_file>")
-        sys.exit(1)
-
-    file_path = sys.argv[1]
-    
-    # Run Dafny and save report
-    report = run_dafny_code(file_path)
-
-    # Print the report
-    print("Dafny Verification Report:")
-    print(json.dumps(report, indent=4))

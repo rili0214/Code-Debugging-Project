@@ -112,16 +112,3 @@ def compute_rankme_score(texts):
     avg_entropy = compute_text_entropy(texts)
     complexity = compute_svd_complexity(texts)
     return np.exp(avg_entropy) * complexity
-
-if __name__ == "__main__":
-    generated_texts = [
-        "#include <iostream>\nint main() { std::cout << \"Hello, World!\"; return 0; }"
-    ]
-
-    split_texts = preprocess_text(generated_texts[0]) 
-    print(f"Preprocessed Text: {split_texts}")
-    try:
-        rankme_score = compute_rankme_score(split_texts)
-        print(f"RankMe Score: {rankme_score}")
-    except ValueError as e:
-        print(f"Error: {e}")

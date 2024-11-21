@@ -20,10 +20,10 @@ from logs import setup_logger
 # Set up logger
 logger = setup_logger()
 
-SONARQUBE_URL = 'http://localhost:9000'
-SONAR_PROJECT_KEY = 'static-debugging'
-USERNAME = 'admin'
-PASSWORD = 'Qwer1234!!!!'
+SONARQUBE_URL = ''
+SONAR_PROJECT_KEY = ''
+USERNAME = ''
+PASSWORD = ''
 
 def run_sonar_scanner():
     """
@@ -43,8 +43,8 @@ def run_sonar_scanner():
         sys.exit(1)
 
     # Path configurations; replace with your paths
-    sonar_scanner_path = '/mnt/c/Users/taox0/OneDrive/Documents/LLaMa/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner'
-    project_dir = '/mnt/c/Users/taox0/OneDrive/Documents/GitHub/Code-Debugging-Project/temp/code_files'
+    sonar_scanner_path = ''
+    project_dir = ''
 
     # Check if paths are correct
     if not os.path.isfile(sonar_scanner_path):
@@ -111,7 +111,7 @@ def fetch_detailed_report(project_key, username, password):
         response.raise_for_status()
         components = response.json().get('components', [])
         if not components:
-            print(f"No components found for project key '{project_key}'")
+            logger.error(f"No components found for project key '{project_key}'")
             return None
 
         # Fetch measures
@@ -119,7 +119,7 @@ def fetch_detailed_report(project_key, username, password):
         response.raise_for_status()
         measures = response.json().get('component', {}).get('measures', [])
         if not measures:
-            print(f"No measures found for project key '{project_key}'")
+            logger.error(f"No measures found for project key '{project_key}'")
             return None
 
         report = {
@@ -129,15 +129,15 @@ def fetch_detailed_report(project_key, username, password):
         return report
 
     except requests.exceptions.HTTPError as http_err:
-        print(f"HTTP error occurred while fetching SonarQube report: {http_err}")
+        logger.error(f"HTTP error occurred while fetching SonarQube report: {http_err}")
     except requests.exceptions.ConnectionError:
-        print("Failed to connect to SonarQube server. Please check the server status and URL.")
+        logger.error("Failed to connect to SonarQube server. Please check the server status and URL.")
     except requests.exceptions.Timeout:
-        print("Request to SonarQube server timed out.")
+        logger.error("Request to SonarQube server timed out.")
     except requests.exceptions.RequestException as req_err:
-        print(f"An error occurred while fetching SonarQube report: {req_err}")
+        logger.error(f"An error occurred while fetching SonarQube report: {req_err}")
     except json.JSONDecodeError:
-        print("Failed to parse the JSON response from SonarQube.")
+        logger.error("Failed to parse the JSON response from SonarQube.")
 
     return None
 
@@ -164,13 +164,3 @@ def save_report(report, filename):
         print(f"Failed to write report to '{filename}': {io_err}")
     except Exception as e:
         print(f"Unexpected error while saving report: {e}")
-
-if __name__ == "__main__":
-    if run_sonar_scanner():
-        report = fetch_detailed_report(SONAR_PROJECT_KEY, USERNAME, PASSWORD)
-        if report:
-            save_report(report, 'sonarqube_report.json')
-        else:
-            print("Failed to retrieve the report from SonarQube.")
-    else:
-        print("SonarQube scanner execution failed.")

@@ -18,13 +18,15 @@ from app.utils import (
     log_info, 
     log_error, 
     cleanup_except_selected, 
-    calculate_scores)
+    calculate_scores
+)
 from Checks.static_analysis.run_sonarqube_check import (
     run_sonar_scanner, 
     fetch_detailed_report, 
     SONAR_PROJECT_KEY, 
     USERNAME, 
-    PASSWORD)
+    PASSWORD
+)
 from Checks.static_analysis.run_clangtidy_check import run_clang_tidy
 from Checks.static_analysis.run_py_check import run_pystatic_analysis
 from Checks.dynamic_analysis.run_valgrind_check import run_valgrind_check

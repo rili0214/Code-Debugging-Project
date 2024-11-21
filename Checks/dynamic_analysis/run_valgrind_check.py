@@ -71,7 +71,7 @@ def run_valgrind_for_compiled(file_path):
     command = ['valgrind', '--leak-check=full', './' + compiled_program]
 
     try:
-        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        result = subprocess.run(command, capture_output = True, text = True, check = True)
         output_json = process_valgrind_output(result)
         logger.info("Valgrind analysis completed successfully.")
         return output_json
@@ -108,7 +108,7 @@ def compile_program(file_path):
     else:
         raise ValueError(f"Unsupported language for compilation: {file_path}")
     
-    subprocess.run(compile_cmd, check=True, capture_output=True, text=True)
+    subprocess.run(compile_cmd, check = True, capture_output = True, text = True)
     return output_file
 
 def run_valgrind_for_java(file_path, lib_paths=None):
@@ -154,7 +154,7 @@ def run_valgrind_for_java(file_path, lib_paths=None):
             if os.name == 'nt':
                 classpath = ';'.join(lib_paths)
             command = ['javac', '-cp', classpath, file_path]
-        subprocess.run(command, check=True)
+        subprocess.run(command, check = True)
     except subprocess.CalledProcessError as e:
         logger.error(f"Compilation failed: {e}")
         return None
@@ -163,7 +163,7 @@ def run_valgrind_for_java(file_path, lib_paths=None):
     class_file = file_path.replace('.java', '')
     command = ['valgrind', '--leak-check=full', 'java', class_file]
     try:
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(command, capture_output = True, text = True)
     except subprocess.CalledProcessError as e:
         logger.error(f"Valgrind execution failed: {e}")
         return None
@@ -185,7 +185,7 @@ def run_valgrind_for_interpreter(file_path, interpreter):
         output_json (dict): A dictionary containing the Valgrind output.
     """
     command = ['valgrind', '--leak-check=full', interpreter, file_path]
-    result = subprocess.run(command, capture_output=True, text=True)
+    result = subprocess.run(command, capture_output = True, text = True)
     output_json = process_valgrind_output(result)
     logger.info("Valgrind analysis completed successfully.")
     return output_json
@@ -272,21 +272,3 @@ def save_json_output(output_json, file_path, filename):
     with open(file_path, 'w') as json_file:
         json.dump(result, json_file, indent=4)
     print(f"Valgrind report saved to {file_path}")
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python3 run_valgrind_check.py <source_file>")
-        sys.exit(1)
-
-    source_file = sys.argv[1]
-
-    if not os.path.exists(source_file):
-        print(f"File {source_file} does not exist.")
-        sys.exit(1)
-
-    try:
-        run_valgrind_check(source_file)
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred while running Valgrind: {e}")
-    except ValueError as ve:
-        print(f"Error: {ve}")

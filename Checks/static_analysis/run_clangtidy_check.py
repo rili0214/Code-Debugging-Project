@@ -10,7 +10,6 @@
 import subprocess
 import os
 import re
-import sys
 from logs import setup_logger
 
 # Set up logger
@@ -67,15 +66,3 @@ def run_clang_tidy(file_path):
 
     except Exception as e:
         logger.error(f"An error occurred while running clang-tidy: {e}")
-
-if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python run_clang_tidy.py <path_to_cpp_file> <output_json_file>")
-        sys.exit(1)
-
-    cpp_file_path = sys.argv[1]
-    output_file = sys.argv[2]
-    #project_dir = ''
-    #output_file = 'clangtidy_report.json'
-    run_clang_tidy(cpp_file_path, output_file)
-    #run_clang_tidy(project_dir, output_file)

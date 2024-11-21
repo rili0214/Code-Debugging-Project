@@ -32,8 +32,8 @@ def run_mypy(file_path):
     try:
         result = subprocess.run(
             ["mypy", "--ignore-missing-imports", file_path],
-            capture_output=True,
-            text=True
+            capture_output = True,
+            text = True
         )
         return {"tool": "mypy", "output": result.stdout}
     except FileNotFoundError:
@@ -58,8 +58,8 @@ def run_pylint(file_path):
     try:
         result = subprocess.run(
             ["pylint", file_path],
-            capture_output=True,
-            text=True
+            capture_output = True,
+            text = True
         )
         return {"tool": "pylint", "output": result.stdout}
     except FileNotFoundError:
@@ -84,8 +84,8 @@ def run_bandit(file_path):
     try:
         result = subprocess.run(
             ["bandit", "-r", file_path],
-            capture_output=True,
-            text=True
+            capture_output = True,
+            text = True
         )
         return {"tool": "bandit", "output": result.stdout}
     except FileNotFoundError:
@@ -139,6 +139,3 @@ def run_pystatic_analysis(file_path):
 
     logger.info("Python static analysis completed.")
     return results
-
-if __name__ == "__main__":
-    run_pystatic_analysis()
