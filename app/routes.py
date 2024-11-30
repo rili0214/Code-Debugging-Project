@@ -11,7 +11,7 @@
 import os
 import json
 import traceback
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify # type: ignore
 from app.utils import (
     extract_code_from_input, 
     save_code_to_temp, 

@@ -185,7 +185,11 @@ def run_valgrind_for_interpreter(file_path, interpreter):
         output_json (dict): A dictionary containing the Valgrind output.
     """
     command = ['valgrind', '--leak-check=full', interpreter, file_path]
-    result = subprocess.run(command, capture_output = True, text = True)
+    try:
+        result = subprocess.run(command, capture_output = True, text = True, check = True)
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Valgrind execution failed: {e}")
+        return {"status": "failure", "error": "Valgrind failed!"}
     output_json = process_valgrind_output(result)
     logger.info("Valgrind analysis completed successfully.")
     return output_json
