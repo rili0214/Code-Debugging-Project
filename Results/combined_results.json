@@ -1,44 +1,109 @@
 {
     "model": "qwen",
-    "generated_code": "#include <iostream>\n#include <string>\n\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}",
-    "clang_tidy": {
-        "file": "temp/code_files/temp_code_66450a11-d9ad-4ed3-964f-5bf36a7e0c64.cpp",
-        "status": "success",
-        "command": "clang-tidy temp/code_files/temp_code_66450a11-d9ad-4ed3-964f-5bf36a7e0c64.cpp --checks=*,-clang-diagnostic*-warning -- -Werror",
-        "errors": [],
-        "warnings": [],
-        "return_code": 0
-    },
-    "valgrind": {
-        "memory_issues": {
-            "uninitialized_value_errors": [],
-            "invalid_read_errors": [],
-            "invalid_write_errors": [],
-            "definitely_lost": [],
-            "indirectly_lost": [],
-            "possibly_lost": [],
-            "still_reachable": []
-        },
-        "error_count": {
-            "uninitialized_value_errors": 0,
-            "invalid_read_errors": 0,
-            "invalid_write_errors": 0,
-            "definitely_lost": 0,
-            "indirectly_lost": 0,
-            "possibly_lost": 0,
-            "still_reachable": 0
-        },
-        "status": "success"
+    "generated_code": "debugged code\npackage main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n)\n\nfunc main() {\n\tdefer func() {\n\t\tif r := recover(); r != nil {\n\t\t\tlog.Fatalf(\"Recovered from panic: %v\", r)\n\t\t}\n\t}()\n\n\tfmt.Println(\"Hello, World!\")\n}",
+    "sonarqube": {
+        "components": [
+            {
+                "key": "static-debugging",
+                "name": "Static Analysis Sonarqube",
+                "qualifier": "TRK",
+                "project": "static-debugging"
+            }
+        ],
+        "measures": [
+            {
+                "metric": "statements",
+                "value": "1"
+            },
+            {
+                "metric": "coverage",
+                "value": "0.0",
+                "bestValue": false
+            },
+            {
+                "metric": "vulnerabilities",
+                "value": "1",
+                "bestValue": false
+            },
+            {
+                "metric": "files",
+                "value": "2"
+            },
+            {
+                "metric": "bugs",
+                "value": "0",
+                "bestValue": true
+            },
+            {
+                "metric": "line_coverage",
+                "value": "0.0",
+                "bestValue": false
+            },
+            {
+                "metric": "security_rating",
+                "value": "5.0",
+                "bestValue": false
+            },
+            {
+                "metric": "duplicated_lines_density",
+                "value": "0.0",
+                "bestValue": true
+            },
+            {
+                "metric": "reliability_rating",
+                "value": "1.0",
+                "bestValue": true
+            },
+            {
+                "metric": "complexity",
+                "value": "1"
+            },
+            {
+                "metric": "comment_lines",
+                "value": "0"
+            },
+            {
+                "metric": "ncloc",
+                "value": "5"
+            },
+            {
+                "metric": "code_smells",
+                "value": "0",
+                "bestValue": true
+            },
+            {
+                "metric": "comment_lines_density",
+                "value": "0.0",
+                "bestValue": false
+            },
+            {
+                "metric": "functions",
+                "value": "1"
+            },
+            {
+                "metric": "alert_status",
+                "value": "ERROR"
+            },
+            {
+                "metric": "classes",
+                "value": "0"
+            },
+            {
+                "metric": "duplicated_blocks",
+                "value": "0",
+                "bestValue": true
+            }
+        ]
     },
     "dafny": {
         "verification_status": "no code provided"
     },
     "evaluation_score": {
-        "stsatic_analysis_score": 10,
-        "dynamic_analysis_score": 10,
+        "stsatic_analysis_score": 5.6,
+        "dynamic_analysis_score": -1,
         "formal_verification_score": -1,
-        "rankme_score": 2.8284271247461903,
-        "final_score": 9.282842712474618,
+        "rankme_score": 2.721197961796914,
+        "final_score": 5.0242395923593826,
         "Note": "-1 indicates current method is not available"
     }
 }

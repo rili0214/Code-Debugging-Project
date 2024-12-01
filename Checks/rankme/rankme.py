@@ -53,7 +53,7 @@ def compute_entropy(token_counts):
     """
     total_tokens = sum(token_counts.values())
     if total_tokens == 0:
-        raise ValueError("Token counts cannot be empty.")
+        return 0
     probabilities = [count / total_tokens for count in token_counts.values()]
     return -sum(p * np.log(p) for p in probabilities if p > 0)
 
@@ -76,7 +76,7 @@ def compute_text_entropy(texts):
         entropy = compute_entropy(token_counts)
         entropies.append(entropy)
     if not entropies:
-        raise ValueError("All texts are empty or contain no valid tokens.")
+        return 0
     return np.mean(entropies)
 
 def compute_svd_complexity(texts):
@@ -109,6 +109,8 @@ def compute_rankme_score(texts):
     returns:
         rankme_score (float): The RankMe score.  
     """
+    if texts is None or len(texts) == 0:
+        return 0
     avg_entropy = compute_text_entropy(texts)
     complexity = compute_svd_complexity(texts)
     return np.exp(avg_entropy) * complexity
