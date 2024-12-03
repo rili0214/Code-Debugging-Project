@@ -1,109 +1,22 @@
 {
     "model": "qwen",
-    "generated_code": "debugged code\npackage main\n\nimport (\n\t\"fmt\"\n\t\"log\"\n)\n\nfunc main() {\n\tdefer func() {\n\t\tif r := recover(); r != nil {\n\t\t\tlog.Fatalf(\"Recovered from panic: %v\", r)\n\t\t}\n\t}()\n\n\tfmt.Println(\"Hello, World!\")\n}",
-    "sonarqube": {
-        "components": [
-            {
-                "key": "static-debugging",
-                "name": "Static Analysis Sonarqube",
-                "qualifier": "TRK",
-                "project": "static-debugging"
-            }
-        ],
-        "measures": [
-            {
-                "metric": "statements",
-                "value": "1"
-            },
-            {
-                "metric": "coverage",
-                "value": "0.0",
-                "bestValue": false
-            },
-            {
-                "metric": "vulnerabilities",
-                "value": "1",
-                "bestValue": false
-            },
-            {
-                "metric": "files",
-                "value": "2"
-            },
-            {
-                "metric": "bugs",
-                "value": "0",
-                "bestValue": true
-            },
-            {
-                "metric": "line_coverage",
-                "value": "0.0",
-                "bestValue": false
-            },
-            {
-                "metric": "security_rating",
-                "value": "5.0",
-                "bestValue": false
-            },
-            {
-                "metric": "duplicated_lines_density",
-                "value": "0.0",
-                "bestValue": true
-            },
-            {
-                "metric": "reliability_rating",
-                "value": "1.0",
-                "bestValue": true
-            },
-            {
-                "metric": "complexity",
-                "value": "1"
-            },
-            {
-                "metric": "comment_lines",
-                "value": "0"
-            },
-            {
-                "metric": "ncloc",
-                "value": "5"
-            },
-            {
-                "metric": "code_smells",
-                "value": "0",
-                "bestValue": true
-            },
-            {
-                "metric": "comment_lines_density",
-                "value": "0.0",
-                "bestValue": false
-            },
-            {
-                "metric": "functions",
-                "value": "1"
-            },
-            {
-                "metric": "alert_status",
-                "value": "ERROR"
-            },
-            {
-                "metric": "classes",
-                "value": "0"
-            },
-            {
-                "metric": "duplicated_blocks",
-                "value": "0",
-                "bestValue": true
-            }
-        ]
-    },
-    "dafny": {
-        "verification_status": "no code provided"
-    },
+    "generated_code": "def bubblesort(ary):\n    \"\"\"\n    Sorts a list of integers using the bubble sort algorithm and counts the number of swaps made.\n\n    Parameters:\n    ary (list): A list of integers to be sorted.\n\n    Returns:\n    tuple: A tuple containing the sorted list and the number of swaps made.\n    \"\"\"\n    cnt = 0\n    n = len(ary)\n    for i in range(n):\n        for j in range(n-1, i, -1):\n            if ary[j] < ary[j-1]:\n                ary[j-1], ary[j] = ary[j], ary[j-1]\n                cnt += 1\n    return ary, cnt\n\ndef main():\n    \"\"\"\n    Reads input, sorts the list using bubble sort, and prints the sorted list and the number of swaps.\n    \"\"\"\n    q = int(input())\n    sort1 = list(map(int, input().split()))\n    ary, cnt = bubblesort(sort1.copy())  # Avoid modifying the original list\n    print(\" \".join(map(str, ary)))\n    print(cnt)\n\nif __name__ == \"__main__\":\n    main()",
+    "python static analysis": [
+        {
+            "tool": "mypy",
+            "output": "Success: no issues found in 1 source file\n"
+        },
+        {
+            "tool": "pylint",
+            "output": "************* Module temp_code_2ee99b03-7ab8-4185-a3fc-7d52e81921e0\ntemp/code_files/temp_code_2ee99b03-7ab8-4185-a3fc-7d52e81921e0.py:22:0: C0301: Line too long (102/100) (line-too-long)\ntemp/code_files/temp_code_2ee99b03-7ab8-4185-a3fc-7d52e81921e0.py:31:0: C0304: Final newline missing (missing-final-newline)\ntemp/code_files/temp_code_2ee99b03-7ab8-4185-a3fc-7d52e81921e0.py:1:0: C0114: Missing module docstring (missing-module-docstring)\ntemp/code_files/temp_code_2ee99b03-7ab8-4185-a3fc-7d52e81921e0.py:1:0: C0103: Module name \"temp_code_2ee99b03-7ab8-4185-a3fc-7d52e81921e0\" doesn't conform to snake_case naming style (invalid-name)\ntemp/code_files/temp_code_2ee99b03-7ab8-4185-a3fc-7d52e81921e0.py:24:4: W0612: Unused variable 'q' (unused-variable)\n\n-----------------------------------\nYour code has been rated at 7.06/10\n\n"
+        },
+        {
+            "tool": "bandit",
+            "output": "Run started:2024-12-03 05:33:36.744585\n\nTest results:\n\tNo issues identified.\n\nCode scanned:\n\tTotal lines of code: 27\n\tTotal lines skipped (#nosec): 0\n\tTotal potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0\n\nRun metrics:\n\tTotal issues (by severity):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\n\tTotal issues (by confidence):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\nFiles skipped (0):\n"
+        }
+    ],
     "evaluation_score": {
-        "stsatic_analysis_score": 5.6,
-        "dynamic_analysis_score": -1,
-        "formal_verification_score": -1,
-        "rankme_score": 2.721197961796914,
-        "final_score": 5.0242395923593826,
-        "Note": "-1 indicates current method is not available"
+        "stsatic_analysis": 9.02,
+        "final_score": 9.02
     }
 }
