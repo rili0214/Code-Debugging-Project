@@ -1,0 +1,4 @@
+# For CGP
+huggingface-hub==0.26.1  # Get Hugging Face API on its website to use inference API
+scikit-learn==1.5.2
+numpy==1.26.4
