@@ -1,16 +1,22 @@
 {
     "model": "qwen",
-    "generated_code": "#include<algorithm>\n#include<vector>\n#include<iostream>\nusing namespace std;\n\nvector<bool> prime;\n\nvoid prime_set(int n){\n  prime.resize(n + 1, true);\n  prime[0] = prime[1] = false;\n  for(int i = 2; i * i <= n; i++){\n    if(prime[i]){\n      for(int j = i * i; j <= n; j += i){\n        prime[j] = false;\n      }\n    }\n  }\n}\n\nint solve(int a, int b, int n){\n  int count = 0;\n  while(count < n && a < prime.size()){\n    if(prime[a]){\n      count++;\n    }\n    a += b;\n  }\n  return a - b;\n}\n\nint main(){\n  prime_set(10000000);\n  int a, b, n;\n  while(cin >> a >> b >> n && a != 0 && b != 0 && n != 0){\n    cout << solve(a, b, n) << endl;\n  }\n}",
-    "clang_tidy": {
-        "file": "temp/code_files/temp_code_a0fe0487-fff4-42b0-889e-be3bcc0a5ce3.cpp",
-        "status": "success",
-        "command": "clang-tidy temp/code_files/temp_code_a0fe0487-fff4-42b0-889e-be3bcc0a5ce3.cpp --checks=*,-clang-diagnostic*-warning -- -Werror",
-        "errors": [],
-        "warnings": [],
-        "return_code": 0
-    },
+    "generated_code": "import math\n\ndef main():\n    \"\"\"\n    This program reads pairs of non-negative integers from the user, calculates their GCD and LCM,\n    and prints the results. The program stops when invalid input (non-integer or negative integers) is entered.\n    \"\"\"\n    while True:\n        try:\n            a, b = map(int, input(\"Enter two non-negative integers separated by space: \").split())\n            if a < 0 or b < 0:\n                print(\"Error: Inputs must be non-negative.\")\n                continue\n            gcd = math.gcd(a, b)\n            lcm = int(a * b / gcd)\n            print(f\"GCD: {gcd}, LCM: {lcm}\")\n        except ValueError:\n            print(\"Error: Invalid input. Please enter two non-negative integers separated by space.\")\n        except KeyboardInterrupt:\n            print(\"\\nProgram terminated by user.\")\n            break\n\nif __name__ == \"__main__\":\n    main()",
+    "python static analysis": [
+        {
+            "tool": "mypy",
+            "output": "Success: no issues found in 1 source file\n"
+        },
+        {
+            "tool": "pylint",
+            "output": "************* Module temp_code_baacfd8b-5fa0-4441-b34d-0eca299e311b\ntemp/code_files/temp_code_baacfd8b-5fa0-4441-b34d-0eca299e311b.py:6:0: C0301: Line too long (111/100) (line-too-long)\ntemp/code_files/temp_code_baacfd8b-5fa0-4441-b34d-0eca299e311b.py:18:0: C0301: Line too long (101/100) (line-too-long)\ntemp/code_files/temp_code_baacfd8b-5fa0-4441-b34d-0eca299e311b.py:24:0: C0304: Final newline missing (missing-final-newline)\ntemp/code_files/temp_code_baacfd8b-5fa0-4441-b34d-0eca299e311b.py:1:0: C0114: Missing module docstring (missing-module-docstring)\ntemp/code_files/temp_code_baacfd8b-5fa0-4441-b34d-0eca299e311b.py:1:0: C0103: Module name \"temp_code_baacfd8b-5fa0-4441-b34d-0eca299e311b\" doesn't conform to snake_case naming style (invalid-name)\n\n-----------------------------------\nYour code has been rated at 7.22/10\n\n"
+        },
+        {
+            "tool": "bandit",
+            "output": "Run started:2024-12-10 19:24:17.743124\n\nTest results:\n\tNo issues identified.\n\nCode scanned:\n\tTotal lines of code: 22\n\tTotal lines skipped (#nosec): 0\n\tTotal potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0\n\nRun metrics:\n\tTotal issues (by severity):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\n\tTotal issues (by confidence):\n\t\tUndefined: 0\n\t\tLow: 0\n\t\tMedium: 0\n\t\tHigh: 0\nFiles skipped (0):\n"
+        }
+    ],
     "evaluation_score": {
-        "stsatic_analysis": 10,
-        "final_score": 10
+        "stsatic_analysis": 9.073333333333332,
+        "final_score": 9.073333333333332
     }
 }

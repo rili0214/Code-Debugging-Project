@@ -20,7 +20,7 @@ from logs import setup_logger
 # Set up logger
 logger = setup_logger()
 
-SONARQUBE_URL = ''
+SONARQUBE_URL = 'http://localhost:9000'
 SONAR_PROJECT_KEY = ''
 USERNAME = ''
 PASSWORD = ''
@@ -43,8 +43,8 @@ def run_sonar_scanner():
         sys.exit(1)
 
     # Path configurations; replace with your paths
-    sonar_scanner_path = ''
-    project_dir = ''
+    sonar_scanner_path = 'path to sonar-scanner'
+    project_dir = 'path to temp/code_files'
 
     # Check if paths are correct
     if not os.path.isfile(sonar_scanner_path):
